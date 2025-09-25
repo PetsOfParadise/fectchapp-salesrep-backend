@@ -1,0 +1,78 @@
+[
+    {
+        "roleName" : "Depot and Banners",
+        "value": "DAB"
+    },
+    {
+        "roleName" : "Catalog",
+        "value": "CATLO"
+    },
+    {
+        "roleName" : "Products and Category",
+        "value": "PAC"
+    },
+    {
+        "roleName" : "Shop owner",
+        "value": "SHO"
+    },
+    {
+        "roleName" : "Admin Management",
+        "value": "AM"
+    },
+    {
+        "roleName" : "Relationship Manager",
+        "value": "RM"
+    },
+    {
+        "roleName" : "Highlight Products",
+        "value": "HP"
+    },
+    {
+        "roleName" : "Expore",
+        "value": "EXP"
+    },
+    {
+        "roleName" : "Reports",
+        "value": "REP"
+    },
+    {
+        "roleName" : "Orders",
+        "value": "ORD"
+    },
+    {
+        "roleName" : "Sundry Debtors",
+        "value": "SUNDRY"
+    },
+    {
+        "roleName" : "Payments",
+        "value": "PAY"
+    },
+    {
+        "roleName" : "Payments History",
+        "value": "PH"
+    },
+    {
+        "roleName" : "WALLET",
+        "value": "WALL"
+    },
+    {
+        "roleName" : "Complaints",
+        "value": "COMP"
+    },
+    {
+        "roleName" : "News Feed",
+        "value": "FEED"
+    },
+    {
+        "roleName" : "Version Control",
+        "value": "VC"
+    },
+    {
+        "roleName" : "Discount Structure",
+        "value": "DIS"
+    },
+    {
+        "roleName" : "Maps",
+        "value": "MAP"
+    }
+]

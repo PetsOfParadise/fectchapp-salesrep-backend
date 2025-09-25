@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      text-align: center;
+      margin: 25px;
+      font-family: arial, sans-serif;
+    }
+
+    table {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+
+    }
+
+    td,
+    th {
+      text-align: left;
+      padding: 8px;
+      font-size: 13px;
+    }
+
+    .topbordder {
+      border: solid 0.3em white;
+      border-top-color: black;
+      width: auto;
+      margin-left: 80px;
+    }
+
+    .bottomborder {
+      border-bottom: solid 0.1em black;
+    }
+
+    /*Assign font-size of parent element to 0px*/
+    div {
+      font-size: 0px;
+    }
+
+    /*Making the element inline-block*/
+    /*Assign proper font-size to the inline block element*/
+    div span {
+      display: inline-block;
+      background-color: green;
+      font-size: 10rem;
+    }
+
+    .alignright {
+      padding-left: 12px;
+    }
+
+    .rightmove {
+      margin-left: 80px;
+    }
+
+    .rightmove1 {
+      padding-left: 80px;
+    }
+
+    li {
+      text-align: center;
+    }
+
+    hr.new1 {
+      border-top: 4px solid black;
+    }
+
+    .k {
+      margin-left: 840px;
+    }
+
+    .jk {
+      margin-left: 740px;
+    }
+
+    /* thead {
+      display: table-header-group;
+    }
+     */
+
+
+    table,
+    th,
+    td {
+      border: 1px solid black;
+      border-collapse: collapse;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h2 style="text-align: center;">Europet Products Pvt Ltd</h2>
+  <h4 style="text-align: center;">No 230/2, Nageshwararao Road, <br> Vanagaram Main Road,
+    <br>Athipet,Ambattur Industrial Estate, <br>
+    Chennai -600058.
+  </h4>
+  <h2 style="text-align: center;">{{shopName}}</h2>
+  <h4 style="text-align: center;">Purchase Order<span><br></h4>
+
+  <!-- <ul style="list-style-type:none;" id="name">
+        {{#each shopAddress as | shopaddress |}}
+        <li>{{shopaddress}}</li>
+        {{/each}}
+      </ul> -->
+  <br>
+  <!-- <br> -->
+  <!-- <script>
+        // var names = ["Appaswamy Platina Block-6", "Appaswamy Platina", "Porur", "Chennai", "Tamil Nadu 600116", "India"]
+        var names = shopAddress.length > 0 ? shopAddress : []
+
+        var output = [];
+        for (var ind = 0; ind < names.length; ind++) {
+          console.log("ind", ind)
+          if (names[ind].length > 7) {
+            output.push(names[ind])
+          } else {
+            var k = names.length > ind + 1 ? names[ind] + ',' + names[ind + 1] : names[ind]
+            output.push(k)
+            ind++;
+          }
+        }
+        console.log(output)
+        document.getElementById('name').innerHTML =
+          '<li>' + output.join('</li><li>') + '</li>'
+
+
+      </script> -->
+
+
+  <div class="topbordder"></div>
+  <table>
+    <thead>
+      <tr>
+        <th class="bottomborder">S.No</th>
+        <th class="bottomborder">Product Name</th>
+        <th class="bottomborder">Product Code</th>
+        <th class="bottomborder">Billed Quantity</th>
+        <th class="bottomborder">Free Quantity</th>
+        <th class="bottomborder">MRP</th>
+        <th class="bottomborder">Discount</th>
+        <th class="bottomborder">Amount</th>
+      </tr>
+    </thead>
+    <hr class="new1">
+    <!-- Opening balance -->
+
+
+
+    <!-- List the Ledger here-->
+
+    <tbody>
+      {{#each orderItems as | orderItem |}}
+      <tr>
+        <td>{{orderItem.no}}</td>
+        <td>{{orderItem.productName}}</td>
+        <td>{{orderItem.orderProductId}}</td>
+        <td>{{orderItem.quantity}}</td>
+        <td>{{orderItem.freeQuantity}}</td>
+        <td>{{orderItem.price}}</td>
+        <td>{{orderItem.productDiscount}}</td>
+        <td>{{orderItem.supplyPrice}}</td>
+      </tr>
+      {{/each}}
+    </tbody>
+
+    <!--Total Value here -->
+    <!-- <hr width="100%" color="black" /> -->
+    <!-- <tr>
+          <td></td>
+          <td><strong></strong></td>
+          <td></td>
+          <td></td>
+          &nbsp;&nbsp;&nbsp;&nbsp;<td class="topbordder">{{ledgerObj.totalDebit}}</td>
+          <td class="topbordder">{{ledgerObj.totalCredit}}</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>By <strong>Closing Balance</strong></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td class="alignright">{{ledgerObj.outstandingBalance}}</td>
+        </tr> -->
+
+  </table>
+  <br>
+  <br>
+  <hr class="new1">
+  <!-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
+  <!-- <h4 class="k">{{ledgerObj.totalDebit}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ledgerObj.totalCredit}}</h4> -->
+
+  <h4><strong>Grand Total</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+      class="jk">{{totalAmount}}</span></h4>
+
+  <hr class="new1">
+
+
+
+</body>
+
+</html>

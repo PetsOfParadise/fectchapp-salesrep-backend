@@ -1,0 +1,32 @@
+{
+    "error": false,
+    "statusCode": 200,
+    "message": "Success",
+    "openingBalance": 0,
+    "outstandingBalance": 0,
+    "totalDebit": 800,
+    "totalCredit": 800,
+    "history": [
+        {
+            "vouchernumber": "2",
+            "date": "28-7-2020",
+            "vouchertype": "Sales",
+            "amount": 800,
+            "type": "Debit"
+        },
+        {
+            "vouchernumber": "RCPT/1",
+            "date": "28-7-2020",
+            "vouchertype": "Receipt",
+            "amount": 400,
+            "type": "Credit"
+        },
+        {
+            "vouchernumber": "RCPT/2",
+            "date": "28-7-2020",
+            "vouchertype": "Receipt",
+            "amount": 400,
+            "type": "Credit"
+        }
+    ]
+}

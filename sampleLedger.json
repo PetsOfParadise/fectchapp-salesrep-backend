@@ -1,0 +1,71 @@
+{
+    "error" : false,
+    "statusCode" : 200,
+    "message": "Success",
+    "totalDebit": 430892,
+    "totalCredit": 283656,
+    "openingBalance": 2642314,
+    "outstandingBalance": 4332442,
+    "history": [
+        {
+            "date": "02/04/2020",
+            "particulars": "Sales - EP065",
+            "amount" : 661232,
+            "paymentType":"DEBIT"
+        },
+        {
+            "date": "02/04/2020",
+            "particulars": "Sales - EP065",
+            "amount" : 661232,
+            "paymentType":"DEBIT"
+        },
+        {
+            "date": "02/04/2020",
+            "particulars": "Bank",
+            "amount" : 661232,
+            "paymentType":"CREDIT" 
+        },
+        {
+            "date": "02/04/2020",
+            "particulars": "Sales - EP065",
+            "amount" : 661232,  
+            "paymentType":"DEBIT"
+        },
+        {
+            "date": "02/04/2020",
+            "particulars": "Sales - EP065",
+            "amount" : 661232,  
+            "paymentType":"DEBIT"
+        },
+        {
+            "date": "02/04/2020",
+            "particulars": "Sales - EP065",
+            "amount" : 661232,  
+            "paymentType":"DEBIT"
+        },
+        {
+            "date": "02/04/2020",
+            "particulars": "Sales - EP065",
+            "amount" : 661232,  
+            "paymentType":"DEBIT"
+        },
+        {
+            "date": "02/04/2020",
+            "particulars": "Bank",
+            "amount" : 661232,
+            "paymentType":"CREDIT" 
+        },
+        {
+            "date": "02/04/2020",
+            "particulars": "Sales - EP065",
+            "amount" : 661232,  
+            "paymentType":"DEBIT"
+        },
+        {
+            "date": "02/04/2020",
+            "particulars": "Sales - EP065",
+            "amount" : 661232,  
+            "paymentType":"DEBIT"
+        }
+    ]
+}

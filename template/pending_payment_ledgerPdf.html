@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      text-align: center;
+      margin: 25px;
+      font-family: arial, sans-serif;
+    }
+
+    table {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+
+    }
+
+    td,
+    th {
+      text-align: left;
+      padding: 8px;
+      font-size: 13px;
+    }
+
+    .topbordder {
+      border: solid 0.3em white;
+      border-top-color: black;
+      width: auto;
+      margin-left: 80px;
+    }
+
+    .bottomborder {
+      border-bottom: solid 0.1em black;
+    }
+
+    /*Assign font-size of parent element to 0px*/
+    div {
+      font-size: 0px;
+    }
+
+    /*Making the element inline-block*/
+    /*Assign proper font-size to the inline block element*/
+    div span {
+      display: inline-block;
+      background-color: green;
+      font-size: 10rem;
+    }
+
+    .alignright {
+      padding-left: 12px;
+    }
+
+    .rightmove {
+      margin-left: 80px;
+    }
+
+    .rightmove1 {
+      padding-left: 80px;
+    }
+
+    li {
+      text-align: center;
+    }
+
+    hr.new1 {
+      border-top: 4px solid black;
+    }
+    .k{
+      margin-left: 10px;
+    }
+    .jk{
+      margin-left: 10px;
+    }
+    tfoot td {
+      border-top: 4px solid black;
+      padding-top: 17px; /* adjust this value as needed */
+      padding-bottom: 17px; /* adjust this value as needed */
+    }
+    .bordered {
+      border-top: 4px solid black;
+      /* border-bottom: 2px solid black; */
+    }
+  </style>
+</head>
+
+<body>
+
+  <h2 style="text-align: center;">Europet Products Pvt Ltd</h2>
+  <h4 style="text-align: center;">No 230/2, Nageshwararao Road, <br> Vanagaram Main Road,
+    <br>Athipet,Ambattur Industrial Estate, <br>
+    Chennai -600058.
+  </h4>
+  <h2 style="text-align: center;">{{shopName}}</h2>
+  <h4 style="text-align: center;">Pending Ledger<span><br>
+      <ul style="list-style-type:none;" id="name">
+        {{#each shopAddress as | shopaddress |}}
+        <li>{{shopaddress}}</li>
+        {{/each}}
+      </ul>
+      <br>
+      <!-- <br> -->
+      <!-- <script>
+        // var names = ["Appaswamy Platina Block-6", "Appaswamy Platina", "Porur", "Chennai", "Tamil Nadu 600116", "India"]
+        var names = shopAddress.length > 0 ? shopAddress : []
+
+        var output = [];
+        for (var ind = 0; ind < names.length; ind++) {
+          console.log("ind", ind)
+          if (names[ind].length > 7) {
+            output.push(names[ind])
+          } else {
+            var k = names.length > ind + 1 ? names[ind] + ',' + names[ind + 1] : names[ind]
+            output.push(k)
+            ind++;
+          }
+        }
+        console.log(output)
+        document.getElementById('name').innerHTML =
+          '<li>' + output.join('</li><li>') + '</li>'
+
+
+      </script> -->
+
+
+      <div class="topbordder"></div>
+      <table>
+        <thead>
+          <tr>
+            <th class="bottomborder">S.No</th>
+            <th class="bottomborder">Date</th>
+            <th class="bottomborder">Ref.No.</th>
+            <th class="bottomborder">Opening Amount</th>
+            <th class="bottomborder">Pending Amount</th>
+            <th class="bottomborder">Due On</th>
+            <th class="bottomborder">OverDue By Days</th>
+          </tr>
+        </thead>
+      <hr class="new1">
+        <!-- Opening balance -->
+        <tr>
+          <!-- <td>29/11/2022</td> -->
+          <!-- <td><strong>Opening Balance</strong></td> -->
+          <td></td>
+          <td></td>
+          <!-- <td><strong>{{ledgerObj.openingBalance}}</strong></td>
+          <td><strong>{{ledgerObj.outstandingBalance}}</strong></td> -->
+          <td></td>
+        </tr>
+
+
+        <!-- List the Ledger here-->
+
+        <tbody>
+          {{#each ledgers as | ledger |}}
+          <tr>
+            <td>{{ledger.no}}</td>
+            <td>{{ledger.date}}</td>
+            <td>{{ledger.refNumber}}</td>
+            <td>{{ledger.openingAmount}}</td>
+            <td>{{ledger.pendingAmount}}</td>
+            <td>{{ledger.billDue}}</td>
+            <td>{{ledger.overDue}}</td>
+          </tr>
+          {{/each}}
+        </tbody>
+
+        <!--Total Value here -->
+        <!-- <hr width="100%" color="black" /> -->
+        <!-- <tr>
+          <td></td>
+          <td><strong></strong></td>
+          <td></td>
+          <td></td>
+          &nbsp;&nbsp;&nbsp;&nbsp;<td class="topbordder">{{ledgerObj.totalDebit}}</td>
+          <td class="topbordder">{{ledgerObj.totalCredit}}</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>By <strong>Closing Balance</strong></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td class="alignright">{{ledgerObj.outstandingBalance}}</td>
+        </tr> -->
+        <tfoot>
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><strong>{{ledgerObj.openingBalance}}</strong></td>
+            <td><strong>{{ledgerObj.outstandingBalance}}</strong></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td colspan="7" class="bordered"></td>
+          </tr>
+        </tfoot>
+      </table>
+      <!-- <br>
+      <br>
+      <hr class="new1">
+      < &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
+      <!-- <h4 class="k">{{ledgerObj.openingBalance}}</h4>
+      <h4><span class="jk">{{ledgerObj.outstandingBalance}}</span></h4>
+      <hr class="new1"> --> 
+
+
+
+</body>
+
+</html>

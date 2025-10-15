@@ -261,7 +261,7 @@ class UserService {
              // smsDeatils.message = `Fetch: Please use the code ${otp} to verify your mobile number. If you did not register for an account, please ignore this message.`
               // console.log("smsDeatils", smsDeatils)
 
-              smsDeatils.message =`199921`
+              smsDeatils.message =`199933`
               smsDeatils.variables_values=`${otp}`
               var SendSms = await utils.textLocalSendSms(smsDeatils)
               console.log("SendSms", SendSms)
@@ -280,7 +280,7 @@ class UserService {
 
               // smsDeatils.message = `Fetch: Please use the code ${otp} to verify your mobile number. If you did not register for an account, please ignore this message.`
               // console.log("smsDeatils", smsDeatils)
-               smsDeatils.message =`199921`
+               smsDeatils.message =`199933`
               smsDeatils.variables_values=`${otp}`
               var SendSms = await utils.textLocalSendSms(smsDeatils)
               console.log("SendSms", SendSms)
@@ -358,7 +358,7 @@ class UserService {
 
           // smsDeatils.message = `Fetch: Please use the code ${otp} to verify your mobile number. If you did not register for an account, please ignore this message`
           // console.log("smsDeatils", smsDeatils)
-           smsDeatils.message =`199921`
+           smsDeatils.message =`199933`
               smsDeatils.variables_values=`${otp}`
           var SendSms = await utils.textLocalSendSms(smsDeatils)
           console.log("SendSms", SendSms)
@@ -377,7 +377,7 @@ class UserService {
 
           // smsDeatils.message = `Fetch: Please use the code ${otp} to verify your mobile number. If you did not register for an account, please ignore this message`
           // console.log("smsDeatils", smsDeatils)
-           smsDeatils.message =`199921`
+           smsDeatils.message =`199933`
               smsDeatils.variables_values=`${otp}`
           var SendSms = await utils.textLocalSendSms(smsDeatils)
           console.log("SendSms", SendSms)

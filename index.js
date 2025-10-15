@@ -5,19 +5,12 @@ import cronjob from './cron'
 require('dotenv').config();
 
 
-// const server = http.createServer(app)
-//   .listen(process.env.NODE_PORT, function () {
-//     // cronjob.start();
+const server = http.createServer(app)
+  .listen(process.env.NODE_PORT, function () {
+    // cronjob.start();
 
-//     var host = server.address().address
-//     var port = server.address().port
-//     console.log('Europet server listening at http://%s:%s', host, port)
-//   });
+    var host = server.address().address
+    var port = server.address().port
+    console.log('Europet server listening at http://%s:%s', host, port)
+  });
 
-
-
-const PORT = process.env.NODE_PORT || 4000;
-
-var server = app.listen(PORT, function () {
-  console.log(`Europet server listening at http://localhost:${PORT}`);
-});

@@ -227,7 +227,7 @@ class UserService {
     }
 
     this.checkUserAvailablity = async (request, callback) => {
-      try {alert(1)
+      try {
         var response = {}
         var checkUser = await userModel.checkMobileNumberExists(request.mobileNumber)
         if (checkUser.error) {

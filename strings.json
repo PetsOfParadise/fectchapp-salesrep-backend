@@ -2,7 +2,7 @@
     "commanErrorString":"Something went wrong",
     "SuccessString":"Success",
     "failureString":"failure",
-    "oopsErrorMessage" : "OOPS",
+    "oopsErrorMessage" : "OOPS1",
     "successStatusCode" : 200,
     "errorStatusCode" : 404,
     "unauthorizedStatusCode" : 401,

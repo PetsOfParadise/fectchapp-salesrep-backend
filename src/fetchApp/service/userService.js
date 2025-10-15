@@ -226,8 +226,8 @@ class UserService {
       callback(response)
     }
 
-    this.checkUserAvailablity = async (request, callback) => {console.log(request,'=====request')
-      try {
+    this.checkUserAvailablity = async (request, callback) => {
+      try {alert(1)
         var response = {}
         var checkUser = await userModel.checkMobileNumberExists(request.mobileNumber)
         if (checkUser.error) {

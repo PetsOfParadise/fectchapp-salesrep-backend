@@ -144,7 +144,7 @@ router.post('/checkUserLogout', [
 
   router.post('/checkUserAvailablity', [
     check('mobileNumber').trim().isNumeric().exists().isLength({ min: 10, max: 10 }).withMessage('mobile number must be 10 digits')
-  ], (request, response) => {console.log(request,'------------request')
+  ], (request, response) => {alert(2);console.log(request,'------------request')
     const errors = validationResult(request)
     if (!errors.isEmpty()) {console.log('HIII')
       var errorArray = errors.array()

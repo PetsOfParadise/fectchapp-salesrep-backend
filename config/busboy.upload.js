@@ -49,7 +49,7 @@ module.exports.upload = async (req, res, next) => {
         console.log(error)
         var errorResponse = {}
         errorResponse.error = true
-        errorResponse.message = "oops2"
+        errorResponse.message = "oops"
         return res.send(errorResponse)
     }
 }

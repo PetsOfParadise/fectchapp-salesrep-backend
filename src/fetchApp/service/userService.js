@@ -226,7 +226,7 @@ class UserService {
       callback(response)
     }
 
-    this.checkUserAvailablity = async (request, callback) => {
+    this.checkUserAvailablity = async (request, callback) => {console.log(request,'=====request')
       try {
         var response = {}
         var checkUser = await userModel.checkMobileNumberExists(request.mobileNumber)
@@ -260,7 +260,7 @@ class UserService {
 
              // smsDeatils.message = `Fetch: Please use the code ${otp} to verify your mobile number. If you did not register for an account, please ignore this message.`
               // console.log("smsDeatils", smsDeatils)
-
+console.log(request,'====IF=request')
               smsDeatils.message =`199933`
               smsDeatils.variables_values=`${otp}`
               var SendSms = await utils.textLocalSendSms(smsDeatils)
@@ -277,7 +277,7 @@ class UserService {
               var smsDeatils = {}
               smsDeatils.mobile_number = request.mobileNumber
               // smsDeatils.mobile_number = 7010942259
-
+console.log(request,'==ELSE===request')
               // smsDeatils.message = `Fetch: Please use the code ${otp} to verify your mobile number. If you did not register for an account, please ignore this message.`
               // console.log("smsDeatils", smsDeatils)
                smsDeatils.message =`199933`
@@ -355,7 +355,7 @@ class UserService {
           var smsDeatils = {}
           smsDeatils.mobile_number = request.mobileNumber
           // smsDeatils.mobile_number = 7010942259
-
+console.log(request,'====resent=request')
           // smsDeatils.message = `Fetch: Please use the code ${otp} to verify your mobile number. If you did not register for an account, please ignore this message`
           // console.log("smsDeatils", smsDeatils)
            smsDeatils.message =`199933`

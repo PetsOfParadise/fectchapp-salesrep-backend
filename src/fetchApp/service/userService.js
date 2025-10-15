@@ -258,8 +258,11 @@ class UserService {
               smsDeatils.mobile_number = request.mobileNumber
               // smsDeatils.mobile_number = 7010942259
 
-              smsDeatils.message = `Fetch: Please use the code ${otp} to verify your mobile number. If you did not register for an account, please ignore this message.`
+             // smsDeatils.message = `Fetch: Please use the code ${otp} to verify your mobile number. If you did not register for an account, please ignore this message.`
               // console.log("smsDeatils", smsDeatils)
+
+              smsDeatils.message =`199921`
+              smsDeatils.variables_values=`${otp}`
               var SendSms = await utils.textLocalSendSms(smsDeatils)
               console.log("SendSms", SendSms)
 

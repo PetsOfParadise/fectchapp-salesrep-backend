@@ -7,7 +7,6 @@ import path from 'path'
 import parser from 'xml2json'
 
 
-const axios = require('axios');
 
 
 require('dotenv').config()

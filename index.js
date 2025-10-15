@@ -14,3 +14,10 @@ const server = http.createServer(app)
     console.log('Europet server listening at http://%s:%s', host, port)
   });
 
+
+
+// const PORT = process.env.NODE_PORT || 3000;
+
+// var server = app.listen(PORT, function () {
+//   console.log(`Europet server listening at http://localhost:${PORT}`);
+// });

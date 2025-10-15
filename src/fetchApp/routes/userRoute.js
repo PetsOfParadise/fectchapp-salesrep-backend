@@ -142,7 +142,7 @@ router.post('/checkUserLogout', [
     })
   })
 
-  router.post('/checkUserAvailablity', [
+  router.post('/checkUserAvailablity1', [
     check('mobileNumber').trim().isNumeric().exists().isLength({ min: 10, max: 10 }).withMessage('mobile number must be 10 digits')
   ], (request, response) => {console.log(request,'------------request')
     const errors = validationResult(request)

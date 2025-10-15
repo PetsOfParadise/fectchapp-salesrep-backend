@@ -14,9 +14,12 @@ class SmsTemplates {
 
                     //==> user/placeOrder api
                     var smsDeatils = {}
-                    smsDeatils.mobile_number = data.mobileNumber
+                    smsDeatils.mobile_number = '8050215029'//data.mobileNumber
 
-                    smsDeatils.message = `Fetch: You have placed an order for ${data.totalAmount} at ${data.orderTime} with order ID ${data.orderId}.`
+                    // smsDeatils.message = `Fetch: You have placed an order for ${data.totalAmount} at ${data.orderTime} with order ID ${data.orderId}.`
+
+                smsDeatils.message = `199902`
+                smsDeatils.variables_values=`${data.totalAmount}|${data.orderTime}|${data.orderId}`
 
                     var SendSms = await utils.textLocalSendSms(smsDeatils)
                     // console.log("SendSms", SendSms)
@@ -48,9 +51,13 @@ class SmsTemplates {
 
                     //==> user/placeOrder api
                     var smsDeatils = {}
-                    smsDeatils.mobile_number = data.mobileNumber
+                    smsDeatils.mobile_number = '8050215029'//data.mobileNumber
 
-                    smsDeatils.message = `Fetch: ${data.shopName} has placed an order for ${data.totalAmount} at ${data.orderTime} with order ID ${data.orderId}.`
+                    // smsDeatils.message = `Fetch: ${data.shopName} has placed an order for ${data.totalAmount} at ${data.orderTime} with order ID ${data.orderId}.`
+
+                      smsDeatils.message = `199920`
+                      smsDeatils.variables_values=`${data.shopName}|${data.totalAmount}|${data.orderTime}|${data.orderId}`
+
 
                     var SendSms = await utils.textLocalSendSms(smsDeatils)
                     console.log("SendSms", SendSms)
@@ -83,9 +90,13 @@ class SmsTemplates {
 
                     //==> salesRep/placeOrder api
                     var smsDeatils = {}
-                    smsDeatils.mobile_number = data.mobileNumber
+                    smsDeatils.mobile_number = '8050215029'//data.mobileNumber
 
-                    smsDeatils.message = `Fetch: ${data.salesRepName} has placed an order with ID ${data.orderId}. Please check My Orders section.`
+                    // smsDeatils.message = `Fetch: ${data.salesRepName} has placed an order with ID ${data.orderId}. Please check My Orders section.`
+
+                    smsDeatils.message = `199928`
+                      smsDeatils.variables_values=`${data.salesRepName}|${data.orderId}`
+
 
                     var SendSms = await utils.textLocalSendSms(smsDeatils)
                     console.log("SendSms", SendSms)

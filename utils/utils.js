@@ -214,43 +214,50 @@ class Utils {
     // }
 
 
+const request = require('request');
 
-module.exports.textLocalSendSms = async (data) => {
-  
-  let res = {};
-  try {
+this.textLocalSendSms = (data) => {console.log('HHTUI')
+  return new Promise(function (resolve) {
+    var res = {};
     const numbersStr = Array.isArray(data.mobile_number) 
       ? data.mobile_number.join(',') 
       : data.mobile_number;
 
-    const response = await axios({
+    const options = {
       method: 'POST',
       url: 'https://www.fast2sms.com/dev/bulkV2',
       headers: {
         'authorization': 'YeM750BEgowCuiIXLW638sdtj1rTDRGpVkcHlyZSvUqKfF4bnNaVcuQ0jBUiZFptxhrC243gMGE1oOYK',
         'Content-Type': 'application/json'
       },
-      data: {
-        sender_id: 'FETCHU',    
-         message: data.message,
+      json: {
+        sender_id: 'FETCHU',
+        message: data.message,
         route: 'dlt',
         language: 'english',
         numbers: numbersStr,
         flash: 0,
-        schedule_time: '', 
-        variables_values:data.variables_values
+        schedule_time: '',
+        variables_values: data.variables_values
+      }
+    };
+
+    request(options, function (error, response, body) {
+      if (error) {
+        res.error = true;
+        console.log('Fast2SMS Error:', error);
+        resolve(res);
+      } else if (!body.return) {
+        res.error = true;
+        console.log('Fast2SMS Response Error:', body);
+        resolve(res);
+      } else {
+        res.error = false;
+        res.result = body;
+        resolve(res);
       }
     });
-
-    res.error = !response.data.return;
-    res.result = response.data;
-  } catch (err) {
-    console.log('Fast2SMS Error:', err.response ? err.response.data : err.message);
-    res.error = true;
-    res.result = err.response ? err.response.data : err.message;
-  }
-
-  return res;
+  });
 };
 
 

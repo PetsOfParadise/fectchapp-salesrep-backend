@@ -103,8 +103,9 @@ class SalesRepService {
               smsDeatils.mobile_number = request.mobile
               // smsDeatils.mobile_number = 7010942259
 
-              smsDeatils.message = `Fetch: Please use the code ${otp} to reset your password. If you did not request for your password to be reset, ignore this message`
-              console.log("smsDeatils", smsDeatils)
+              // smsDeatils.message = `Fetch: Please use the code ${otp} to reset your password. If you did not request for your password to be reset, ignore this message`
+              smsDeatils.message = `199881`
+                 smsDeatils.variables_values=`${otp}`
               var SendSms = await utils.textLocalSendSms(smsDeatils)
               // console.log("SendSms", SendSms)
 
@@ -120,8 +121,9 @@ class SalesRepService {
               smsDeatils.mobile_number = request.mobile
               // smsDeatils.mobile_number = 7010942259
 
-              smsDeatils.message = `Fetch: Please use the code ${otp} to reset your password. If you did not request for your password to be reset, ignore this message`
-              console.log("smsDeatils", smsDeatils)
+              // smsDeatils.message = `Fetch: Please use the code ${otp} to reset your password. If you did not request for your password to be reset, ignore this message`
+             smsDeatils.message = `199881`
+                 smsDeatils.variables_values=`${otp}`
               var SendSms = await utils.textLocalSendSms(smsDeatils)
               console.log("SendSms", SendSms)
 

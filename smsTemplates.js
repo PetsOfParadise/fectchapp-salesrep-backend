@@ -14,10 +14,11 @@ class SmsTemplates {
 
                     //==> user/placeOrder api
                     var smsDeatils = {}
-                    smsDeatils.mobile_number = '8050215029'//data.mobileNumber
+                    smsDeatils.mobile_number = data.mobileNumber
 
                     // smsDeatils.message = `Fetch: You have placed an order for ${data.totalAmount} at ${data.orderTime} with order ID ${data.orderId}.`
 
+                    
                 smsDeatils.message = `199902`
                 smsDeatils.variables_values=`${data.totalAmount}|${data.orderTime}|${data.orderId}`
 
@@ -51,7 +52,7 @@ class SmsTemplates {
 
                     //==> user/placeOrder api
                     var smsDeatils = {}
-                    smsDeatils.mobile_number = '8050215029'//data.mobileNumber
+                    smsDeatils.mobile_number = data.mobileNumber
 
                     // smsDeatils.message = `Fetch: ${data.shopName} has placed an order for ${data.totalAmount} at ${data.orderTime} with order ID ${data.orderId}.`
 
@@ -90,7 +91,7 @@ class SmsTemplates {
 
                     //==> salesRep/placeOrder api
                     var smsDeatils = {}
-                    smsDeatils.mobile_number = '8050215029'//data.mobileNumber
+                    smsDeatils.mobile_number = data.mobileNumber
 
                     // smsDeatils.message = `Fetch: ${data.salesRepName} has placed an order with ID ${data.orderId}. Please check My Orders section.`
 
@@ -129,7 +130,10 @@ class SmsTemplates {
                     var smsDeatils = {}
                     smsDeatils.mobile_number = data.mobileNumber
 
-                    smsDeatils.message = `Fetch: Your Order with ID ${data.orderId} has been ACCEPTED`
+                    // smsDeatils.message = `Fetch: Your Order with ID ${data.orderId} has been ACCEPTED`
+
+                      smsDeatils.message = `199923`
+                      smsDeatils.variables_values=`${data.orderId}`
 
                     var SendSms = await utils.textLocalSendSms(smsDeatils)
                     console.log("SendSms", SendSms)
@@ -158,7 +162,11 @@ class SmsTemplates {
                     var smsDeatils = {}
                     smsDeatils.mobile_number = data.mobileNumber
 
-                    smsDeatils.message = `Fetch: Your Order with ID ${data.orderId} has been PACKAGED. You can view the Packing List in My Orders section.`
+                    // smsDeatils.message = `Fetch: Your Order with ID ${data.orderId} has been PACKAGED. You can view the Packing List in My Orders section.`
+
+                     smsDeatils.message = `199924`
+                      smsDeatils.variables_values=`${data.orderId}`
+
 
                     var SendSms = await utils.textLocalSendSms(smsDeatils)
                     console.log("SendSms", SendSms)
@@ -189,7 +197,10 @@ class SmsTemplates {
                     var smsDeatils = {}
                     smsDeatils.mobile_number = data.mobileNumber
 
-                    smsDeatils.message = `Fetch: Your Order with ID ${data.orderId} has been SHIPPED. You can view the LR copy in My Orders section.`
+                    // smsDeatils.message = `Fetch: Your Order with ID ${data.orderId} has been SHIPPED. You can view the LR copy in My Orders section.`
+
+                    smsDeatils.message = `199925`
+                    smsDeatils.variables_values=`${data.orderId}`
 
                     var SendSms = await utils.textLocalSendSms(smsDeatils)
                     console.log("SendSms", SendSms)
@@ -216,7 +227,10 @@ class SmsTemplates {
                     var smsDeatils = {}
                     smsDeatils.mobile_number = data.mobileNumber
 
-                    smsDeatils.message = `Fetch: Your Order with ID ${data.orderId} has been DELIVERED`
+                    // smsDeatils.message = `Fetch: Your Order with ID ${data.orderId} has been DELIVERED`
+
+                    smsDeatils.message = `199923`
+                 smsDeatils.variables_values=`${data.orderId}`
 
                     var SendSms = await utils.textLocalSendSms(smsDeatils)
                     console.log("SendSms", SendSms)
@@ -243,7 +257,10 @@ class SmsTemplates {
                     var smsDeatils = {}
                     smsDeatils.mobile_number = data.mobileNumber
 
-                    smsDeatils.message = `Fetch: Your Order with ID ${data.orderId} has been CANCELLED`
+                    // smsDeatils.message = `Fetch: Your Order with ID ${data.orderId} has been CANCELLED`
+
+                    smsDeatils.message = `199889`
+                 smsDeatils.variables_values=`${data.orderId}`
 
                     var SendSms = await utils.textLocalSendSms(smsDeatils)
                     console.log("SendSms", SendSms)
@@ -270,7 +287,11 @@ class SmsTemplates {
                     var smsDeatils = {}
                     smsDeatils.mobile_number = data.mobileNumber
 
-                    smsDeatils.message = `Fetch: The payment of ${data.amount} paid by ${data.paymentMethod} for Order ID ${data.orderId} has been Marked as Paid.`
+                    // smsDeatils.message = `Fetch: The payment of ${data.amount} paid by ${data.paymentMethod} for Order ID ${data.orderId} has been Marked as Paid.`
+
+
+                    smsDeatils.message = `199890`
+                     smsDeatils.variables_values=`${data.amount}|${data.paymentMethod}|${data.orderId}`
 
                     var SendSms = await utils.textLocalSendSms(smsDeatils)
                     console.log("SendSms", SendSms)
@@ -298,9 +319,12 @@ class SmsTemplates {
                     var smsDeatils = {}
                     smsDeatils.mobile_number = data.mobileNumber
 
-                    smsDeatils.message = `Fetch: The payment of ${data.amount} paid by ${data.paymentMethod} for Order ID ${data.orderId} has been notified to the Admin and awaiting Confirmation from Accounts. 
-                    `
+                    // smsDeatils.message = `Fetch: The payment of ${data.amount} paid by ${data.paymentMethod} for Order ID ${data.orderId} has been notified to the Admin and awaiting Confirmation from Accounts. 
+                    // `
 
+
+                    smsDeatils.message = `199908`
+                    smsDeatils.variables_values=`${data.amount}|${data.paymentMethod}|${data.orderId}`
                     var SendSms = await utils.textLocalSendSms(smsDeatils)
                     console.log("SendSms", SendSms)
                     if (SendSms.error) {
@@ -327,7 +351,10 @@ class SmsTemplates {
                     var smsDeatils = {}
                     smsDeatils.mobile_number = data.mobileNumber
 
-                    smsDeatils.message = `Fetch: The payment of ${data.amount} paid by ${data.paymentMethod} for Order ID ${data.orderId} has been Declined.`
+                    // smsDeatils.message = `Fetch: The payment of ${data.amount} paid by ${data.paymentMethod} for Order ID ${data.orderId} has been Declined.`
+
+                    smsDeatils.message = `199887`
+                 smsDeatils.variables_values=`${data.amount}|${data.paymentMethod}|${data.orderId}`
 
                     var SendSms = await utils.textLocalSendSms(smsDeatils)
                     console.log("SendSms", SendSms)
@@ -361,8 +388,11 @@ class SmsTemplates {
                     var smsDeatils = {}
                     smsDeatils.mobile_number = data.mobileNumber
 
-                    smsDeatils.message = `Fetch: The payment of ${data.amount} paid by ${data.paymentMethod} for Order ID ${data.orderId} has been notified to the Admin and awaiting Confirmation from Accounts.`
+                    // smsDeatils.message = `Fetch: The payment of ${data.amount} paid by ${data.paymentMethod} for Order ID ${data.orderId} has been notified to the Admin and awaiting Confirmation from Accounts.`
 
+                    
+                    smsDeatils.message = `199908`
+                 smsDeatils.variables_values=`${data.amount}|${data.paymentMethod}|${data.orderId}`
                     var SendSms = await utils.textLocalSendSms(smsDeatils)
                     console.log("SendSms", SendSms)
                     if (SendSms.error) {
@@ -390,7 +420,10 @@ class SmsTemplates {
                     var smsDeatils = {}
                     smsDeatils.mobile_number = data.mobileNumber
 
-                    smsDeatils.message = `Fetch: The Complaint on Order ID ${data.orderId} for the product ${data.productCode} has been REOPENED by ${data.shopName}.`
+                    // smsDeatils.message = `Fetch: The Complaint on Order ID ${data.orderId} for the product ${data.productCode} has been REOPENED by ${data.shopName}.`
+
+                     smsDeatils.message = `199891`
+                 smsDeatils.variables_values=`${data.orderId}|${data.productCode}|${data.shopName}`
 
                     var SendSms = await utils.textLocalSendSms(smsDeatils)
                     console.log("SendSms", SendSms)
@@ -418,9 +451,11 @@ class SmsTemplates {
                     var smsDeatils = {}
                     smsDeatils.mobile_number = data.mobileNumber
 
-                    smsDeatils.message = `Fetch: ${data.shopName} has OPENED a complaint on Order ID ${data.orderId} for the product ${data.productCode}.`
+                    // smsDeatils.message = `Fetch: ${data.shopName} has OPENED a complaint on Order ID ${data.orderId} for the product ${data.productCode}.`
 
 
+                    smsDeatils.message = `199888`
+                    smsDeatils.variables_values=`${data.shopName}|${data.orderId}|${data.productCode}`
                     var SendSms = await utils.textLocalSendSms(smsDeatils)
                     console.log("SendSms", SendSms)
                     if (SendSms.error) {
@@ -451,8 +486,10 @@ class SmsTemplates {
                     var smsDeatils = {}
                     smsDeatils.mobile_number = data.mobileNumber
 
-                    smsDeatils.message = `Fetch: Please use the code ${data.otp} to verify your mobile number. If you did not register for an account, please ignore this message.`
+                    // smsDeatils.message = `Fetch: Please use the code ${data.otp} to verify your mobile number. If you did not register for an account, please ignore this message.`
 
+smsDeatils.message = `199933`
+                    smsDeatils.variables_values=`${data.otp}`
 
                     var SendSms = await utils.textLocalSendSms(smsDeatils)
                     console.log("SendSms", SendSms)
@@ -482,8 +519,11 @@ class SmsTemplates {
                     var smsDeatils = {}
                     smsDeatils.mobile_number = data.mobileNumber
 
-                    smsDeatils.message = `Fetch: Please use the code ${data.otp} to reset your password.If you did not request for your password to be reset, ignore this message`
+                    // smsDeatils.message = `Fetch: Please use the code ${data.otp} to reset your password.If you did not request for your password to be reset, ignore this message`
 
+
+                    smsDeatils.message = `199921`
+                 smsDeatils.variables_values=`${data.otp}`
 
                     var SendSms = await utils.textLocalSendSms(smsDeatils)
                     console.log("SendSms", SendSms)
@@ -513,7 +553,10 @@ class SmsTemplates {
                     var smsDeatils = {}
                     smsDeatils.mobile_number = data.mobileNumber
 
-                    smsDeatils.message = `Fetch: Rs. ${data.amount} has been debited from your wallet against Order ID ${data.orderID}.`
+                    // smsDeatils.message = `Fetch: Rs. ${data.amount} has been debited from your wallet against Order ID ${data.orderID}.`
+
+                    smsDeatils.message = `199886`
+                 smsDeatils.variables_values=`${data.amount}|${data.orderID}`
 
                     var SendSms = await utils.textLocalSendSms(smsDeatils)
                     console.log("SendSms", SendSms)
@@ -542,7 +585,10 @@ class SmsTemplates {
                     var smsDeatils = {}
                     smsDeatils.mobile_number = data.mobileNumber
 
-                    smsDeatils.message = `Fetch: Hurray!! Rs. ${data.amount} has been credited to your wallet.`
+                    // smsDeatils.message = `Fetch: Hurray!! Rs. ${data.amount} has been credited to your wallet.`
+
+                      smsDeatils.message = `199926`
+                 smsDeatils.variables_values=`${data.amount}`
 
                     var SendSms = await utils.textLocalSendSms(smsDeatils)
                     console.log("SendSms", SendSms)
@@ -574,6 +620,7 @@ class SmsTemplates {
 
                     smsDeatils.message = `Fetch: Please use the code ${data.otp} to verify your mobile number. If you did not request to change the mobile number, please ignore this message`
 
+
                     var SendSms = await utils.textLocalSendSms(smsDeatils)
                     console.log("SendSms", SendSms)
                     if (SendSms.error) {
@@ -600,8 +647,11 @@ class SmsTemplates {
                     var smsDeatils = {}
                     smsDeatils.mobile_number = data.mobileNumber
 
-                    smsDeatils.message = `Fetch: Please use the code ${data.otp} to reset your password. If you did not request for your password to be reset, ignore this message.`
+                    // smsDeatils.message = `Fetch: Please use the code ${data.otp} to reset your password. If you did not request for your password to be reset, ignore this message.`
 
+                    
+                    smsDeatils.message = `199881`
+                 smsDeatils.variables_values=`${data.otp}`
                     var SendSms = await utils.textLocalSendSms(smsDeatils)
                     console.log("SendSms", SendSms)
                     if (SendSms.error) {
@@ -629,7 +679,10 @@ class SmsTemplates {
                     var smsDeatils = {}
                     smsDeatils.mobile_number = data.mobileNumber
 
-                    smsDeatils.message = `Fetch: Please use the code ${data.otp} to verify your mobile number. If you did not request to change the mobile number, please ignore this message.`
+                    // smsDeatils.message = `Fetch: Please use the code ${data.otp} to verify your mobile number. If you did not request to change the mobile number, please ignore this message.`
+
+                    smsDeatils.message = `199927`
+                 smsDeatils.variables_values=`${data.otp}`
 
                     var SendSms = await utils.textLocalSendSms(smsDeatils)
                     console.log("SendSms", SendSms)
@@ -657,8 +710,10 @@ class SmsTemplates {
                     var smsDeatils = {}
                     smsDeatils.mobile_number = data.mobileNumber
 
-                    smsDeatils.message = `Fetch: ${data.salesRepName} has logged a shop visit at ${data.orderTime} to collect an order from your shop.`
+                    // smsDeatils.message = `Fetch: ${data.salesRepName} has logged a shop visit at ${data.orderTime} to collect an order from your shop.`
 
+smsDeatils.message = `199922`
+                 smsDeatils.variables_values=`${data.salesRepName}|${data.orderTime}`
                     var SendSms = await utils.textLocalSendSms(smsDeatils)
                     console.log("SendSms", SendSms)
                     if (SendSms.error) {
@@ -692,8 +747,11 @@ class SmsTemplates {
                     var smsDeatils = {}
                     smsDeatils.mobile_number = data.mobileNumber
 
-                    smsDeatils.message = `Fetch: ${data.salesRepName} has updated a shop visit at ${data.orderTime} to receive payment from you.`
+                    // smsDeatils.message = `Fetch: ${data.salesRepName} has updated a shop visit at ${data.orderTime} to receive payment from you.`
 
+
+smsDeatils.message = `199917`
+                 smsDeatils.variables_values=`${data.salesRepName}|${data.orderTime}`
                     var SendSms = await utils.textLocalSendSms(smsDeatils)
                     console.log("SendSms", SendSms)
                     if (SendSms.error) {
@@ -725,8 +783,11 @@ class SmsTemplates {
                     var smsDeatils = {}
                     smsDeatils.mobile_number = data.mobileNumber
 
-                    smsDeatils.message = `Fetch: ${data.salesRepName} has logged a shop visit at ${data.orderTime} to promote products in your shop.`
+                    // smsDeatils.message = `Fetch: ${data.salesRepName} has logged a shop visit at ${data.orderTime} to promote products in your shop.`
 
+
+smsDeatils.message = `199936`
+                 smsDeatils.variables_values=`${data.salesRepName}|${data.orderTime}`
 
                     var SendSms = await utils.textLocalSendSms(smsDeatils)
                     console.log("SendSms", SendSms)
@@ -760,9 +821,11 @@ class SmsTemplates {
                     var smsDeatils = {}
                     smsDeatils.mobile_number = data.mobileNumber
 
-                    smsDeatils.message = `Fetch: ${data.salesRepName} has updated his activity that he visited your shop at ${data.orderTime} to resolve Returns or Complaints.`
+                    // smsDeatils.message = `Fetch: ${data.salesRepName} has updated his activity that he visited your shop at ${data.orderTime} to resolve Returns or Complaints.`
 
 
+smsDeatils.message = `199935`
+                 smsDeatils.variables_values=`${data.salesRepName}|${data.orderTime}`
                     var SendSms = await utils.textLocalSendSms(smsDeatils)
                     console.log("SendSms", SendSms)
                     if (SendSms.error) {
@@ -798,9 +861,11 @@ class SmsTemplates {
                     var smsDeatils = {}
                     smsDeatils.mobile_number = data.mobileNumber
 
-                    smsDeatils.message = `Fetch: ${data.salesRepName} has updated a shop visit at ${data.orderTime} to deliver products on urgent basis.`
+                    // smsDeatils.message = `Fetch: ${data.salesRepName} has updated a shop visit at ${data.orderTime} to deliver products on urgent basis.`
 
 
+smsDeatils.message = `199931`
+                 smsDeatils.variables_values=`${data.salesRepName}|${data.orderTime}`
 
                     var SendSms = await utils.textLocalSendSms(smsDeatils)
                     console.log("SendSms", SendSms)
@@ -835,7 +900,11 @@ class SmsTemplates {
                     var smsDeatils = {}
                     smsDeatils.mobile_number = data.mobileNumber
 
-                    smsDeatils.message = `Fetch: ${data.shopName} has logged a shop visit at ${data.orderTime} to Reconcile Ledgers/ Office work.`
+                    // smsDeatils.message = `Fetch: ${data.shopName} has logged a shop visit at ${data.orderTime} to Reconcile Ledgers/ Office work.`
+
+
+smsDeatils.message = `199932`
+                 smsDeatils.variables_values=`${data.shopName}|${data.orderTime}`
 
                     var SendSms = await utils.textLocalSendSms(smsDeatils)
                     console.log("SendSms", SendSms)
@@ -869,8 +938,11 @@ class SmsTemplates {
                     var smsDeatils = {}
                     smsDeatils.mobile_number = data.mobileNumber
 
-                    smsDeatils.message = `Fetch: ${data.salesRepName} has logged a Telephonic Call with you at ${data.orderTime} to collect an order from your shop.`
+                    // smsDeatils.message = `Fetch: ${data.salesRepName} has logged a Telephonic Call with you at ${data.orderTime} to collect an order from your shop.`
 
+
+smsDeatils.message = `199883`
+                 smsDeatils.variables_values=`${data.salesRepName}|${data.orderTime}`
 
                     var SendSms = await utils.textLocalSendSms(smsDeatils)
                     console.log("SendSms", SendSms)
@@ -903,9 +975,13 @@ class SmsTemplates {
                     var smsDeatils = {}
                     smsDeatils.mobile_number = data.mobileNumber
 
-                    smsDeatils.message = `Fetch: ${data.salesRepName} has updated a Phone call with you at ${data.orderTime} to collect payment from you.`
+                    // smsDeatils.message = `Fetch: ${data.salesRepName} has updated a Phone call with you at ${data.orderTime} to collect payment from you.`
 
 
+
+
+smsDeatils.message = `199940`
+                 smsDeatils.variables_values=`${data.salesRepName}|${data.orderTime}`
 
                     var SendSms = await utils.textLocalSendSms(smsDeatils)
                     console.log("SendSms", SendSms)
@@ -936,10 +1012,12 @@ class SmsTemplates {
                     var smsDeatils = {}
                     smsDeatils.mobile_number = data.mobileNumber
 
-                    smsDeatils.message = `Fetch: ${data.salesRepName} has updated his activity on the shop interaction for the reason Product promotion.`
-                    smsDeatils.message = `Fetch: ${data.salesRepName} has updated his activity on the shop interaction for the reason Product Promotion. This message is from Europet Products Private Limited. 
-                    If you have any questions or need further details, please contact us at support@fetchapp.in.`
-
+                    // smsDeatils.message = `Fetch: ${data.salesRepName} has updated his activity on the shop interaction for the reason Product promotion.`
+                    // smsDeatils.message = `Fetch: ${data.salesRepName} has updated his activity on the shop interaction for the reason Product Promotion. This message is from Europet Products Private Limited. 
+                    // If you have any questions or need further details, please contact us at support@fetchapp.in.`
+smsDeatils.message = `199941`
+                 smsDeatils.variables_values=`${data.salesRepName}`
+                    
 
                     var SendSms = await utils.textLocalSendSms(smsDeatils)
                     console.log("SendSms", SendSms)
@@ -973,8 +1051,11 @@ class SmsTemplates {
                     var smsDeatils = {}
                     smsDeatils.mobile_number = data.mobileNumber
 
-                    smsDeatils.message = `Fetch: ${data.salesRepName} has updated his activity that he spoke to you by a phone call at ${data.orderTime} to resolve Returns or Complaints.`
+                    // smsDeatils.message = `Fetch: ${data.salesRepName} has updated his activity that he spoke to you by a phone call at ${data.orderTime} to resolve Returns or Complaints.`
 
+
+                    smsDeatils.message = `199935`
+                 smsDeatils.variables_values=`${data.salesRepName}|${data.orderTime}`
 
                     var SendSms = await utils.textLocalSendSms(smsDeatils)
                     console.log("SendSms", SendSms)
@@ -1010,6 +1091,7 @@ class SmsTemplates {
 
                     smsDeatils.message = `Fetch :OOPS!! We Regret to inform you that your Payment for Order ID ${data.orderId} has Failed , Please verify your payment details or Try another Payment method`
 
+                   
 
                     var SendSms = await utils.textLocalSendSms(smsDeatils)
                     console.log("SendSms", SendSms)
@@ -1041,7 +1123,11 @@ class SmsTemplates {
                     var smsDeatils = {}
                     smsDeatils.mobile_number = data.mobileNumber
 
-                    smsDeatils.message = `Fetch: You have OPENED a complaint with Ticket ID ${data.ticketId} for Order ID ${data.orderId} related to pet products from Europet Products Private Limited. If you need any further assistance or have questions, please contact us at support@fetchapp.in.`
+                    // smsDeatils.message = `Fetch: You have OPENED a complaint with Ticket ID ${data.ticketId} for Order ID ${data.orderId} related to pet products from Europet Products Private Limited. If you need any further assistance or have questions, please contact us at support@fetchapp.in.`
+
+                   
+smsDeatils.message = `199943`
+                 smsDeatils.variables_values=`${data.ticketId}|${data.orderId}`
 
                     var SendSms = await utils.textLocalSendSms(smsDeatils)
                     // console.log("SendSms", SendSms)
@@ -1073,7 +1159,11 @@ class SmsTemplates {
                     var smsDeatils = {}
                     smsDeatils.mobile_number = data.mobileNumber
 
-                    smsDeatils.message = `Fetch: ${data.shopName} has OPENED a complaint with Ticket ID ${data.ticketId} for Order ID ${data.orderId} related to pet products from Europet Products Private Limited. If you need any further assistance or have questions, please contact us at support@fetchapp.in.`
+                    // smsDeatils.message = `Fetch: ${data.shopName} has OPENED a complaint with Ticket ID ${data.ticketId} for Order ID ${data.orderId} related to pet products from Europet Products Private Limited. If you need any further assistance or have questions, please contact us at support@fetchapp.in.`
+
+
+smsDeatils.message = `199912`
+                 smsDeatils.variables_values=`${data.shopName}|${data.ticketId}||${data.orderId}`
 
                     var SendSms = await utils.textLocalSendSms(smsDeatils)
                     // console.log("SendSms", SendSms)
@@ -1105,7 +1195,11 @@ class SmsTemplates {
                     var smsDeatils = {}
                     smsDeatils.mobile_number = data.mobileNumber
 
-                    smsDeatils.message = `Fetch: A complaint has been OPENED by ${data.salesRepName} on behalf of your shop ${data.shopName} for Order ID ${data.orderId} related to pet products from Europet Products Private Limited. If you need any further assistance or have questions, please contact us at support@fetchapp.in.`
+                    // smsDeatils.message = `Fetch: A complaint has been OPENED by ${data.salesRepName} on behalf of your shop ${data.shopName} for Order ID ${data.orderId} related to pet products from Europet Products Private Limited. If you need any further assistance or have questions, please contact us at support@fetchapp.in.`
+
+                    smsDeatils.message = `199949`
+                 smsDeatils.variables_values=`${data.salesRepName}|${data.shopName}|${data.orderId}`
+
 
                     var SendSms = await utils.textLocalSendSms(smsDeatils)
                     console.log("SendSms", SendSms)
@@ -1137,7 +1231,11 @@ class SmsTemplates {
                     var smsDeatils = {}
                     smsDeatils.mobile_number = data.mobileNumber
 
-                    smsDeatils.message = `Fetch: ${data.salesRepName} on behalf of ${data.shopName} has OPENED a complaint for Order ID ${data.orderId} related to pet products from Europet Products Private Limited. If you need any further assistance or have questions, please contact us at support@fetchapp.in.`
+                    // smsDeatils.message = `Fetch: ${data.salesRepName} on behalf of ${data.shopName} has OPENED a complaint for Order ID ${data.orderId} related to pet products from Europet Products Private Limited. If you need any further assistance or have questions, please contact us at support@fetchapp.in.`
+
+
+                    smsDeatils.message = `199949`
+                 smsDeatils.variables_values=`${data.salesRepName}|${data.shopName}|${data.orderId}`
 
                     var SendSms = await utils.textLocalSendSms(smsDeatils)
                     console.log("SendSms", SendSms)
@@ -1170,8 +1268,11 @@ class SmsTemplates {
                     var smsDeatils = {}
                     smsDeatils.mobile_number = data.mobileNumber
 
-                    smsDeatils.message = `Fetch: ${data.shopName} has OPENED a complaint with Ticket ID ${data.ticketId} for Order ID ${data.orderId} related to pet products from Europet Products Private Limited. If you need any further assistance or have questions, please contact us at support@fetchapp.in.`
+                    // smsDeatils.message = `Fetch: ${data.shopName} has OPENED a complaint with Ticket ID ${data.ticketId} for Order ID ${data.orderId} related to pet products from Europet Products Private Limited. If you need any further assistance or have questions, please contact us at support@fetchapp.in.`
 
+                    
+                    smsDeatils.message = `199943`
+                 smsDeatils.variables_values=`${data.shopName}|${data.ticketId}|${data.orderId}`
                     var SendSms = await utils.textLocalSendSms(smsDeatils)
                     // console.log("SendSms", SendSms)
                     if (SendSms.error) {

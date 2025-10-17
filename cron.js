@@ -382,9 +382,9 @@ cron.schedule(` ${min1} ${hour} ${date} ${month} *`, async function () {
                 smsDeatils.mobile_number = val[0].mobileNumber
                 //// smsDeatils.mobile_number = 7010942259
                 //// smsDeatils.message = `Fetch: The payment of Rs. ${balanceAmount} on the Order ID ${orderid} is overdue. Please make the payment today.`
-                smsDeatils.message = `Fetch: The payment of Rs ${balanceAmount} amount is overdue. Please make the payment immediately. If already paid please ignore`
-                // smsDeatils.message = `199915`
-                // smsDeatils.variables_values=`${balanceAmount}`
+                // smsDeatils.message = `Fetch: The payment of Rs ${balanceAmount} amount is overdue. Please make the payment immediately. If already paid please ignore`
+                 smsDeatils.message = `199915`
+                 smsDeatils.variables_values=`${balanceAmount}`
 
                 let due = val[0].daysLeft * -1
                 console.log("smsDeatils", smsDeatils)

@@ -3073,8 +3073,12 @@ class SalesRepHomeService {
                             smsDeatils.mobile_number = orders.data[0].mobileNumber
                             // smsDeatils.mobile_number = 917010942259
 
-                            smsDeatils.message = `Fetch: The Order with ID ${orders.data[0].bookingId} for Manager ${orders.data[0].outletName} has been ACCEPTED`
-                            console.log("smsDeatils", smsDeatils)
+                            //  smsDeatils.message = `Fetch: The Order with ID ${orders.data[0].bookingId} for Manager ${orders.data[0].outletName} has been ACCEPTED`
+                             
+                            smsDeatils.message = `199884`
+                 smsDeatils.variables_values=`${orders.data[0].bookingId}|${orders.data[0].outletName}`
+                             
+
                             var SendSms = await utils.textLocalSendSms(smsDeatils)
                             console.log("SendSms", SendSms)
                         } else if (request.status === 'DELIVERED') {
@@ -3082,8 +3086,9 @@ class SalesRepHomeService {
                             var smsDeatils = {}
                             smsDeatils.mobile_number = orders.data[0].mobileNumber
                             // smsDeatils.mobile_number = 7010942259
-                            smsDeatils.message = `Fetch: Your Order with ID ${orders.data[0].bookingId} has been Delivered`
-                            console.log("smsDeatils", smsDeatils)
+                            // smsDeatils.message = `Fetch: Your Order with ID ${orders.data[0].bookingId} has been Delivered`
+                             smsDeatils.message = `199923`
+                 smsDeatils.variables_values=`${orders.data[0].bookingId}`
                             var SendSms = await utils.textLocalSendSms(smsDeatils)
                             console.log("SendSms", SendSms)
                             if (orders.data[0].paymentStatus == 'COMPLETE' && orders.data[0].onlinePaid == 1) {

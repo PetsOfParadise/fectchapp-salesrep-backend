@@ -1306,14 +1306,14 @@ class SalesRepShopOwnerService {
 
                     var rawdata = fs.readFileSync(path.resolve(__dirname, `../../../../../www/html/${process.env.USER_LEDGER}`))
 
-                    // var ledgerData = JSON.parse(parser.toJson(rawdata, {
-                    //     reversible: true
-                    // }));
-                    let ledgerData;
+                    var ledgerData = JSON.parse(parser.toJson(rawdata, {
+                        reversible: true
+                    }));
+                    // let ledgerData;
 
-                         ledgerData = JSON.parse(rawdata);
+                    //      ledgerData = JSON.parse(rawdata);
     
-console.log(ledgerData,'===ledgerData')
+// console.log(ledgerData,'===ledgerData')
                     var newrawdata = ledgerData['ENVELOPE']['LEDGERS']
                     // console.log("newrawdata",newrawdata)
                     if (newrawdata.length > 0) {

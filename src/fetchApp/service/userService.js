@@ -260,7 +260,6 @@ class UserService {
 
              // smsDeatils.message = `Fetch: Please use the code ${otp} to verify your mobile number. If you did not register for an account, please ignore this message.`
               // console.log("smsDeatils", smsDeatils)
-console.log(request,'====IF=request')
               smsDeatils.message =`199933`
               smsDeatils.variables_values=`${otp}`
               var SendSms = await utils.textLocalSendSms(smsDeatils)
@@ -277,7 +276,7 @@ console.log(request,'====IF=request')
               var smsDeatils = {}
               smsDeatils.mobile_number = request.mobileNumber
               // smsDeatils.mobile_number = 7010942259
-console.log(request,'==ELSE===request')
+
               // smsDeatils.message = `Fetch: Please use the code ${otp} to verify your mobile number. If you did not register for an account, please ignore this message.`
               // console.log("smsDeatils", smsDeatils)
                smsDeatils.message =`199933`
@@ -355,7 +354,7 @@ console.log(request,'==ELSE===request')
           var smsDeatils = {}
           smsDeatils.mobile_number = request.mobileNumber
           // smsDeatils.mobile_number = 7010942259
-console.log(request,'====resent=request')
+
           // smsDeatils.message = `Fetch: Please use the code ${otp} to verify your mobile number. If you did not register for an account, please ignore this message`
           // console.log("smsDeatils", smsDeatils)
            smsDeatils.message =`199933`
@@ -723,8 +722,12 @@ console.log(request,'====resent=request')
               smsDeatils.mobile_number = request.mobileNumber
               // smsDeatils.mobile_number = 7010942259
 
-              smsDeatils.message = `Fetch: Please use the code ${otp} to reset your password. If you did not request for your password to be reset, ignore this message`
+              // smsDeatils.message = `Fetch: Please use the code ${otp} to reset your password. If you did not request for your password to be reset, ignore this message`
               // console.log("smsDeatils", smsDeatils)
+              
+
+              smsDeatils.message = `199881`
+                 smsDeatils.variables_values=`${otp}`
               var SendSms = await utils.textLocalSendSms(smsDeatils)
               console.log("SendSms", SendSms)
 
@@ -740,8 +743,11 @@ console.log(request,'====resent=request')
               smsDeatils.mobile_number = request.mobileNumber
               // smsDeatils.mobile_number = 7010942259
 
-              smsDeatils.message = `Fetch: Please use the code ${otp} to reset your password. If you did not request for your password to be reset, ignore this message`
+              // smsDeatils.message = `Fetch: Please use the code ${otp} to reset your password. If you did not request for your password to be reset, ignore this message`
               // console.log("smsDeatils", smsDeatils)
+
+              smsDeatils.message = `199881`
+                 smsDeatils.variables_values=`${otp}`
               var SendSms = await utils.textLocalSendSms(smsDeatils)
               console.log("SendSms", SendSms)
 

@@ -1286,220 +1286,6 @@ class SalesRepShopOwnerService {
         }
 
 
-//         this.salesRepUserPaymentLedgerDownloadService = async (request, callback) => {
-//             try {
-//                 var response = {}
-//                 console.log("ledger1 auth data", request.body.auth)
-//                 var data = request.body
-//                 request.body.user_id = request.body.shopId
-//                 var findCustomer = await salesRepShopOwnerModel.getOneUserModel(request)
-//                 // console.log("findCustomer", findCustomer)
-//                 if (findCustomer.error) {
-//                     response.error = true
-//                     response.statusCode = STRINGS.successStatusCode
-//                     response.message = STRINGS.commanErrorString
-//                     reject(response)
-//                 } else {
-//                     var customerID = findCustomer.data[0].customerID
-
-//                     // console.log("path.resolve(__dirname",path.resolve(__dirname, `../../../../../www/html/${process.env.USER_LEDGER}`))
-
-//                     // var rawdata = fs.readFileSync(path.resolve(__dirname, `../../../../../www/html/${process.env.USER_LEDGER}`))
-
-//                     var rawdata = fs.readFileSync(path.resolve(__dirname, `../../../${process.env.USER_LEDGER}`))
-
-//                     // var ledgerData = JSON.parse(parser.toJson(rawdata, {
-//                     //     reversible: true
-//                     // }));
-//                     let ledgerData;
-
-//                          ledgerData = JSON.parse(rawdata);
-    
-// console.log(ledgerData,'===ledgerData')
-//                     var newrawdata = ledgerData['ENVELOPE']['LEDGERS']
-//                     // console.log("newrawdata",newrawdata)
-//                     if (newrawdata.length > 0) {
-
-//                         var filterLedger = newrawdata.filter(function (item) {
-//                             // console.log("datas",item)
-//                             return item.LEDGERCODE.$t == customerID
-//                         })
-//                         // console.log("filterLedger", filterLedger)
-
-//                         // console.log("filterLedger", filterLedger[0].HISTORY[0])
-//                         if (filterLedger.length > 0) {
-//                             var ledgerHistory = filterLedger[0].HISTORY
-//                             ledgerHistory = ledgerHistory == undefined ? [] : ledgerHistory
-//                             var historyResult = []
-//                             if (Array.isArray(ledgerHistory)) {
-//                                 historyResult = ledgerHistory
-//                                 // console.log("historyResult",historyResult)
-//                             } else if (typeof ledgerHistory === 'object') {
-//                                 historyResult.push(ledgerHistory)
-//                             }
-//                             // console.log("historyResult first2", historyResult)
-
-
-//                             var resp = []
-//                             if (historyResult.lenth != 0 &&
-//                                 data.fromDate.length != 0 && data.toDate.length != 0) {
-//                                 // console.log("historyResult", historyResult)
-//                                 historyResult.forEach((val, ind) => {
-//                                     var date = new Date(val.DATE.$t)
-//                                     // console.log("date history", date)
-//                                     var startDate = new Date(data.fromDate);
-//                                     var toDate = new Date(data.toDate);
-//                                     // console.log("date startDate", startDate)
-//                                     // console.log("date toDate", toDate)
-
-//                                     if (startDate.getTime() <= date.getTime() && toDate.getTime() >= date.getTime()) {
-//                                         resp.push(val)
-//                                     }
-//                                 })
-//                             } else {
-//                                 resp = historyResult
-//                             }
-
-//                             // console.log("response", resp)
-
-//                             var options = {
-//                                 format: "A2",
-//                                 orientation: "portrait",
-//                                 // border: "10mm",
-//                                 // header: {
-//                                 //     height: "45mm",
-//                                 //     // contents: '<div style="text-align: center;"><h1>Europet Products Pvt Ltd</h1></div>'
-//                                 // },
-//                                 // footer: {
-//                                 //     height: "28mm",
-//                                 //     contents: {
-//                                 //         first: 'Cover page',
-//                                 //         // 2: 'Second page', // Any page number is working. 1-based index
-//                                 //         default: '<span style="color: #444;">{{page}}</span>/<span>{{pages}}</span>', // fallback value
-//                                 //         last: 'Last Page'
-//                                 //     }
-//                                 // }
-//                             };
-//                             var ledgers = []
-//                             resp.forEach((val, ind) => {
-//                                 let obj = {}
-//                                 let ledger_date = val.DATE.$t.length > 0 ? val.DATE.$t.split('-') : val.DATE.$t
-//                                 obj.no = ind + 1
-//                                 obj.date = ledger_date[1] + '-' + ledger_date[2] + '-' + ledger_date[0]
-//                                 obj.particulars = val.PARTICULARS.$t
-//                                 // obj.amount = val.AMOUNT.$t
-//                                 obj.voucherNmber = val.VOUCHERNUMBER.$t
-//                                 obj.credit = val.TYPE.$t == 'Credit' ? val.AMOUNT.$t : null
-//                                 obj.debit = val.TYPE.$t == 'Debit' ? val.AMOUNT.$t : null
-//                                 obj.voucherType = val.VOUCHERTYPE.$t
-//                                 ledgers.push(obj)
-//                             })
-//                             // require('../../.././../../www')
-
-//                             var html = fs.readFileSync(path.resolve(__dirname, `../../.././../../www/${process.env.PDF_TEMPLATE}`), "utf8");
-//                             var timestamp = (new Date).getTime().toString()
-
-//                             var ledgerObj = {}
-//                             ledgerObj.openingBalance = filterLedger[0].OPENINGBALANCE.$t
-//                             ledgerObj.outstandingBalance = filterLedger[0].CLOSINGBALANCE.$t
-//                             ledgerObj.totalDebit = filterLedger[0].TOTALDEBIT.$t
-//                             ledgerObj.totalCredit = filterLedger[0].TOTALCREDIT.$t
-
-//                             var shopAddress = findCustomer.data[0].shopAddress.length > 0 ? findCustomer.data[0].shopAddress.split(',')
-//                                 : []
-//                             // console.log("shopAddress", shopAddress)
-//                             var output = [];
-//                             for (var ind = 0; ind < shopAddress.length; ind++) {
-//                                 //   console.log("ind", ind)
-//                                 if (shopAddress[ind].length > 11) {
-//                                     var temp = shopAddress[ind]
-//                                     output.push(`${temp},`)
-//                                 } else {
-//                                     var k = shopAddress.length > ind + 1 ? shopAddress[ind] + ',' + shopAddress[ind + 1] : shopAddress[ind]
-//                                     if (ind != shopAddress.length - 1) {
-//                                         k = k + ','
-//                                     }
-//                                     output.push(k)
-//                                     ind++;
-//                                 }
-//                             }
-
-//                             var document = {
-//                                 html: html,
-//                                 data: {
-//                                     ledgers: ledgers,
-//                                     shopName: findCustomer.data[0].shopName,
-//                                     shopAddress: output,
-//                                     ledgerObj: ledgerObj
-//                                 },
-//                                 path: path.resolve(__dirname, `../../../../../www/html/uploads/UserLedger-${timestamp}.pdf`),
-//                                 type: "",
-//                             };
-//                             // require('../../../../www/html/uploads')
-
-//                             try {
-//                                 var pdf_data = await pdf.create(document, options)
-//                                 console.log("pdfResp", pdf_data)
-//                                 var fileObj = Object.assign("", pdf_data)
-//                                 var file_url = fileObj.filename.replace('/var/www/html/', "");
-//                                 // console.log("file_url", file_url)
-//                                 var fileData = {}
-//                                 fileData.file_path = path.resolve(__dirname, `../../../../../www/html/${file_url}`)
-//                                 fileData.fileName = fileObj.filename.replace('/var/www/html/uploads/', "");
-//                                 fileData.type = 'temp_files'
-//                                 var s3PdfUpload = await uploadS3.S3_upload(fileData)
-//                                 // console.log("s3PdfUpload", s3PdfUpload)
-//                                 if (s3PdfUpload.error) {
-//                                     console.log('s3PdfUpload error')
-//                                     response.error = true
-//                                     response.statusCode = STRINGS.errorStatusCode
-//                                     response.message = STRINGS.commanErrorString
-//                                 } else {
-//                                     response.error = false
-//                                     response.statusCode = STRINGS.successStatusCode
-//                                     response.message = STRINGS.SuccessString
-//                                     response.fileUrl = s3PdfUpload.data
-//                                 }
-//                             } catch (error) {
-//                                 console.log('pdf error', error)
-//                                 response.error = true
-//                                 response.statusCode = STRINGS.errorStatusCode
-//                                 response.message = STRINGS.commanErrorString
-//                             }
-//                             // console.log("history",response.history)
-//                         } else {
-//                             response.error = true
-//                             response.statusCode = STRINGS.errorStatusCode
-//                             response.message = "Ledger Is Empty"
-//                         }
-//                     } else {
-//                         response.error = true
-//                         response.statusCode = STRINGS.errorStatusCode
-//                         response.message = "Ledger Is Empty"
-//                     }
-
-//                 }
-//             } catch (e) {
-//                 if (e.code === 'ENOENT') {
-//                     console.error('File not found!', e);
-//                     response.error = true
-//                     response.statusCode = STRINGS.errorStatusCode
-//                     response.message = "Ledger File Not Found"
-//                   } else {
-//                     console.error('An error occurred:', e);
-//                     response.error = true
-//                     response.statusCode = STRINGS.errorStatusCode
-//                     response.message = STRINGS.oopsErrorMessage
-//                   }
-//             }
-//             callback(response)
-//         }
-
-
-        
-
-
-
         this.salesRepUserPaymentLedgerDownloadService = async (request, callback) => {
             try {
                 var response = {}
@@ -1518,9 +1304,7 @@ class SalesRepShopOwnerService {
 
                     // console.log("path.resolve(__dirname",path.resolve(__dirname, `../../../../../www/html/${process.env.USER_LEDGER}`))
 
-                    // var rawdata = fs.readFileSync(path.resolve(__dirname, `../../../../../www/html/${process.env.USER_LEDGER}`))
-
-                    var rawdata = fs.readFileSync(path.resolve(__dirname, `../../../${process.env.USER_LEDGER}`))
+                    var rawdata = fs.readFileSync(path.resolve(__dirname, `../../../../../www/html/${process.env.USER_LEDGER}`))
 
                     // var ledgerData = JSON.parse(parser.toJson(rawdata, {
                     //     reversible: true
@@ -1530,48 +1314,15 @@ class SalesRepShopOwnerService {
                          ledgerData = JSON.parse(rawdata);
     
 console.log(ledgerData,'===ledgerData')
-                   // var newrawdata = ledgerData['ENVELOPE']['LEDGERS']
+                    var newrawdata = ledgerData['ENVELOPE']['LEDGERS']
                     // console.log("newrawdata",newrawdata)
-                    // if (newrawdata.length > 0) {
+                    if (newrawdata.length > 0) {
 
-                        // var filterLedger = newrawdata.filter(function (item) {
-                        //     // console.log("datas",item)
-                        //     return item.LEDGERCODE.$t == customerID
-                        // })
-
-                        var newrawdata = [{
-                        LEDGERCODE: { $t: customerID },  // you can add this to match filter if needed
-                        OPENINGBALANCE: { $t: ledgerData.openingBalance },
-                        CLOSINGBALANCE: { $t: ledgerData.outstandingBalance },
-                        TOTALDEBIT: { $t: ledgerData.totalDebit },
-                        TOTALCREDIT: { $t: ledgerData.totalCredit },
-                        HISTORY: ledgerData.history.map(h => ({
-                            DATE: { $t: h.date },
-                            PARTICULARS: { $t: h.vouchertype },  // you can adjust
-                            VOUCHERNUMBER: { $t: h.vouchernumber },
-                            TYPE: { $t: h.type },
-                            AMOUNT: { $t: h.amount },
-                            VOUCHERTYPE: { $t: h.vouchertype }
-                        }))
-                     }];console.log(newrawdata,'====newrawdata')
- if (newrawdata.length > 0) {
-                                            var filterLedger = [{
-                        LEDGERCODE: { $t: customerID },
-                        OPENINGBALANCE: { $t: ledgerData.openingBalance },
-                        CLOSINGBALANCE: { $t: ledgerData.outstandingBalance },
-                        TOTALDEBIT: { $t: ledgerData.totalDebit },
-                        TOTALCREDIT: { $t: ledgerData.totalCredit },
-                        HISTORY: ledgerData.history.map(h => ({
-                            DATE: { $t: h.date },
-                            PARTICULARS: { $t: h.vouchertype },
-                            VOUCHERNUMBER: { $t: h.vouchernumber },
-                            TYPE: { $t: h.type },
-                            AMOUNT: { $t: h.amount },
-                            VOUCHERTYPE: { $t: h.vouchertype }
-                        }))
-                        }];
-
-                        console.log("filterLedger", filterLedger)
+                        var filterLedger = newrawdata.filter(function (item) {
+                            // console.log("datas",item)
+                            return item.LEDGERCODE.$t == customerID
+                        })
+                        // console.log("filterLedger", filterLedger)
 
                         // console.log("filterLedger", filterLedger[0].HISTORY[0])
                         if (filterLedger.length > 0) {
@@ -1643,8 +1394,7 @@ console.log(ledgerData,'===ledgerData')
                             })
                             // require('../../.././../../www')
 
-                           // var html = fs.readFileSync(path.resolve(__dirname, `../../.././../../www/${process.env.PDF_TEMPLATE}`), "utf8");
-                            var html = fs.readFileSync(path.resolve(__dirname, `../../../template/${process.env.PDF_TEMPLATE}`), "utf8");console.log(html,'[====html')
+                            var html = fs.readFileSync(path.resolve(__dirname, `../../.././../../www/${process.env.PDF_TEMPLATE}`), "utf8");
                             var timestamp = (new Date).getTime().toString()
 
                             var ledgerObj = {}
@@ -1680,7 +1430,7 @@ console.log(ledgerData,'===ledgerData')
                                     shopAddress: output,
                                     ledgerObj: ledgerObj
                                 },
-                                path: path.resolve(__dirname, `../../../uploads/UserLedger-${timestamp}.pdf`),
+                                path: path.resolve(__dirname, `../../../../../www/html/uploads/UserLedger-${timestamp}.pdf`),
                                 type: "",
                             };
                             // require('../../../../www/html/uploads')
@@ -1690,14 +1440,12 @@ console.log(ledgerData,'===ledgerData')
                                 console.log("pdfResp", pdf_data)
                                 var fileObj = Object.assign("", pdf_data)
                                 var file_url = fileObj.filename.replace('/var/www/html/', "");
+                                // console.log("file_url", file_url)
                                 var fileData = {}
-                                // fileData.file_path = path.resolve(__dirname, `../../../${file_url}`)
-                                 fileData.file_path = fileObj.filename 
+                                fileData.file_path = path.resolve(__dirname, `../../../../../www/html/${file_url}`)
                                 fileData.fileName = fileObj.filename.replace('/var/www/html/uploads/', "");
                                 fileData.type = 'temp_files'
-                                
                                 var s3PdfUpload = await uploadS3.S3_upload(fileData)
-                                 console.log(s3PdfUpload,'==fileData.fileName')
                                 // console.log("s3PdfUpload", s3PdfUpload)
                                 if (s3PdfUpload.error) {
                                     console.log('s3PdfUpload error')
@@ -1744,6 +1492,256 @@ console.log(ledgerData,'===ledgerData')
             }
             callback(response)
         }
+
+
+        
+
+
+
+//         this.salesRepUserPaymentLedgerDownloadService = async (request, callback) => {
+//             try {
+//                 var response = {}
+//                 console.log("ledger1 auth data", request.body.auth)
+//                 var data = request.body
+//                 request.body.user_id = request.body.shopId
+//                 var findCustomer = await salesRepShopOwnerModel.getOneUserModel(request)
+//                 // console.log("findCustomer", findCustomer)
+//                 if (findCustomer.error) {
+//                     response.error = true
+//                     response.statusCode = STRINGS.successStatusCode
+//                     response.message = STRINGS.commanErrorString
+//                     reject(response)
+//                 } else {
+//                     var customerID = findCustomer.data[0].customerID
+
+//                     // console.log("path.resolve(__dirname",path.resolve(__dirname, `../../../../../www/html/${process.env.USER_LEDGER}`))
+
+//                     // var rawdata = fs.readFileSync(path.resolve(__dirname, `../../../../../www/html/${process.env.USER_LEDGER}`))
+
+//                     var rawdata = fs.readFileSync(path.resolve(__dirname, `../../../${process.env.USER_LEDGER}`))
+
+//                     // var ledgerData = JSON.parse(parser.toJson(rawdata, {
+//                     //     reversible: true
+//                     // }));
+//                     let ledgerData;
+
+//                          ledgerData = JSON.parse(rawdata);
+    
+// console.log(ledgerData,'===ledgerData')
+//                    // var newrawdata = ledgerData['ENVELOPE']['LEDGERS']
+//                     // console.log("newrawdata",newrawdata)
+//                     // if (newrawdata.length > 0) {
+
+//                         // var filterLedger = newrawdata.filter(function (item) {
+//                         //     // console.log("datas",item)
+//                         //     return item.LEDGERCODE.$t == customerID
+//                         // })
+
+//                         var newrawdata = [{
+//                         LEDGERCODE: { $t: customerID },  // you can add this to match filter if needed
+//                         OPENINGBALANCE: { $t: ledgerData.openingBalance },
+//                         CLOSINGBALANCE: { $t: ledgerData.outstandingBalance },
+//                         TOTALDEBIT: { $t: ledgerData.totalDebit },
+//                         TOTALCREDIT: { $t: ledgerData.totalCredit },
+//                         HISTORY: ledgerData.history.map(h => ({
+//                             DATE: { $t: h.date },
+//                             PARTICULARS: { $t: h.vouchertype },  // you can adjust
+//                             VOUCHERNUMBER: { $t: h.vouchernumber },
+//                             TYPE: { $t: h.type },
+//                             AMOUNT: { $t: h.amount },
+//                             VOUCHERTYPE: { $t: h.vouchertype }
+//                         }))
+//                      }];console.log(newrawdata,'====newrawdata')
+//  if (newrawdata.length > 0) {
+//                                             var filterLedger = [{
+//                         LEDGERCODE: { $t: customerID },
+//                         OPENINGBALANCE: { $t: ledgerData.openingBalance },
+//                         CLOSINGBALANCE: { $t: ledgerData.outstandingBalance },
+//                         TOTALDEBIT: { $t: ledgerData.totalDebit },
+//                         TOTALCREDIT: { $t: ledgerData.totalCredit },
+//                         HISTORY: ledgerData.history.map(h => ({
+//                             DATE: { $t: h.date },
+//                             PARTICULARS: { $t: h.vouchertype },
+//                             VOUCHERNUMBER: { $t: h.vouchernumber },
+//                             TYPE: { $t: h.type },
+//                             AMOUNT: { $t: h.amount },
+//                             VOUCHERTYPE: { $t: h.vouchertype }
+//                         }))
+//                         }];
+
+//                         console.log("filterLedger", filterLedger)
+
+//                         // console.log("filterLedger", filterLedger[0].HISTORY[0])
+//                         if (filterLedger.length > 0) {
+//                             var ledgerHistory = filterLedger[0].HISTORY
+//                             ledgerHistory = ledgerHistory == undefined ? [] : ledgerHistory
+//                             var historyResult = []
+//                             if (Array.isArray(ledgerHistory)) {
+//                                 historyResult = ledgerHistory
+//                                 // console.log("historyResult",historyResult)
+//                             } else if (typeof ledgerHistory === 'object') {
+//                                 historyResult.push(ledgerHistory)
+//                             }
+//                             // console.log("historyResult first2", historyResult)
+
+
+//                             var resp = []
+//                             if (historyResult.lenth != 0 &&
+//                                 data.fromDate.length != 0 && data.toDate.length != 0) {
+//                                 // console.log("historyResult", historyResult)
+//                                 historyResult.forEach((val, ind) => {
+//                                     var date = new Date(val.DATE.$t)
+//                                     // console.log("date history", date)
+//                                     var startDate = new Date(data.fromDate);
+//                                     var toDate = new Date(data.toDate);
+//                                     // console.log("date startDate", startDate)
+//                                     // console.log("date toDate", toDate)
+
+//                                     if (startDate.getTime() <= date.getTime() && toDate.getTime() >= date.getTime()) {
+//                                         resp.push(val)
+//                                     }
+//                                 })
+//                             } else {
+//                                 resp = historyResult
+//                             }
+
+//                             // console.log("response", resp)
+
+//                             var options = {
+//                                 format: "A2",
+//                                 orientation: "portrait",
+//                                 // border: "10mm",
+//                                 // header: {
+//                                 //     height: "45mm",
+//                                 //     // contents: '<div style="text-align: center;"><h1>Europet Products Pvt Ltd</h1></div>'
+//                                 // },
+//                                 // footer: {
+//                                 //     height: "28mm",
+//                                 //     contents: {
+//                                 //         first: 'Cover page',
+//                                 //         // 2: 'Second page', // Any page number is working. 1-based index
+//                                 //         default: '<span style="color: #444;">{{page}}</span>/<span>{{pages}}</span>', // fallback value
+//                                 //         last: 'Last Page'
+//                                 //     }
+//                                 // }
+//                             };
+//                             var ledgers = []
+//                             resp.forEach((val, ind) => {
+//                                 let obj = {}
+//                                 let ledger_date = val.DATE.$t.length > 0 ? val.DATE.$t.split('-') : val.DATE.$t
+//                                 obj.no = ind + 1
+//                                 obj.date = ledger_date[1] + '-' + ledger_date[2] + '-' + ledger_date[0]
+//                                 obj.particulars = val.PARTICULARS.$t
+//                                 // obj.amount = val.AMOUNT.$t
+//                                 obj.voucherNmber = val.VOUCHERNUMBER.$t
+//                                 obj.credit = val.TYPE.$t == 'Credit' ? val.AMOUNT.$t : null
+//                                 obj.debit = val.TYPE.$t == 'Debit' ? val.AMOUNT.$t : null
+//                                 obj.voucherType = val.VOUCHERTYPE.$t
+//                                 ledgers.push(obj)
+//                             })
+//                             // require('../../.././../../www')
+
+//                            // var html = fs.readFileSync(path.resolve(__dirname, `../../.././../../www/${process.env.PDF_TEMPLATE}`), "utf8");
+//                             var html = fs.readFileSync(path.resolve(__dirname, `../../../template/${process.env.PDF_TEMPLATE}`), "utf8");console.log(html,'[====html')
+//                             var timestamp = (new Date).getTime().toString()
+
+//                             var ledgerObj = {}
+//                             ledgerObj.openingBalance = filterLedger[0].OPENINGBALANCE.$t
+//                             ledgerObj.outstandingBalance = filterLedger[0].CLOSINGBALANCE.$t
+//                             ledgerObj.totalDebit = filterLedger[0].TOTALDEBIT.$t
+//                             ledgerObj.totalCredit = filterLedger[0].TOTALCREDIT.$t
+
+//                             var shopAddress = findCustomer.data[0].shopAddress.length > 0 ? findCustomer.data[0].shopAddress.split(',')
+//                                 : []
+//                             // console.log("shopAddress", shopAddress)
+//                             var output = [];
+//                             for (var ind = 0; ind < shopAddress.length; ind++) {
+//                                 //   console.log("ind", ind)
+//                                 if (shopAddress[ind].length > 11) {
+//                                     var temp = shopAddress[ind]
+//                                     output.push(`${temp},`)
+//                                 } else {
+//                                     var k = shopAddress.length > ind + 1 ? shopAddress[ind] + ',' + shopAddress[ind + 1] : shopAddress[ind]
+//                                     if (ind != shopAddress.length - 1) {
+//                                         k = k + ','
+//                                     }
+//                                     output.push(k)
+//                                     ind++;
+//                                 }
+//                             }
+
+//                             var document = {
+//                                 html: html,
+//                                 data: {
+//                                     ledgers: ledgers,
+//                                     shopName: findCustomer.data[0].shopName,
+//                                     shopAddress: output,
+//                                     ledgerObj: ledgerObj
+//                                 },
+//                                 path: path.resolve(__dirname, `../../../uploads/UserLedger-${timestamp}.pdf`),
+//                                 type: "",
+//                             };
+//                             // require('../../../../www/html/uploads')
+
+//                             try {
+//                                 var pdf_data = await pdf.create(document, options)
+//                                 console.log("pdfResp", pdf_data)
+//                                 var fileObj = Object.assign("", pdf_data)
+//                                 var file_url = fileObj.filename.replace('/var/www/html/', "");
+//                                 var fileData = {}
+//                                 // fileData.file_path = path.resolve(__dirname, `../../../${file_url}`)
+//                                  fileData.file_path = fileObj.filename 
+//                                 fileData.fileName = fileObj.filename.replace('/var/www/html/uploads/', "");
+//                                 fileData.type = 'temp_files'
+                                
+//                                 var s3PdfUpload = await uploadS3.S3_upload(fileData)
+//                                  console.log(s3PdfUpload,'==fileData.fileName')
+//                                 // console.log("s3PdfUpload", s3PdfUpload)
+//                                 if (s3PdfUpload.error) {
+//                                     console.log('s3PdfUpload error')
+//                                     response.error = true
+//                                     response.statusCode = STRINGS.errorStatusCode
+//                                     response.message = STRINGS.commanErrorString
+//                                 } else {
+//                                     response.error = false
+//                                     response.statusCode = STRINGS.successStatusCode
+//                                     response.message = STRINGS.SuccessString
+//                                     response.fileUrl = s3PdfUpload.data
+//                                 }
+//                             } catch (error) {
+//                                 console.log('pdf error', error)
+//                                 response.error = true
+//                                 response.statusCode = STRINGS.errorStatusCode
+//                                 response.message = STRINGS.commanErrorString
+//                             }
+//                             // console.log("history",response.history)
+//                         } else {
+//                             response.error = true
+//                             response.statusCode = STRINGS.errorStatusCode
+//                             response.message = "Ledger Is Empty"
+//                         }
+//                     } else {
+//                         response.error = true
+//                         response.statusCode = STRINGS.errorStatusCode
+//                         response.message = "Ledger Is Empty"
+//                     }
+
+//                 }
+//             } catch (e) {
+//                 if (e.code === 'ENOENT') {
+//                     console.error('File not found!', e);
+//                     response.error = true
+//                     response.statusCode = STRINGS.errorStatusCode
+//                     response.message = "Ledger File Not Found"
+//                   } else {
+//                     console.error('An error occurred:', e);
+//                     response.error = true
+//                     response.statusCode = STRINGS.errorStatusCode
+//                     response.message = STRINGS.oopsErrorMessage
+//                   }
+//             }
+//             callback(response)
+//         }
 
 
 

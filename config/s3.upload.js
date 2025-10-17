@@ -17,12 +17,27 @@ let temp_files_bucketName = process.env.PDF_bUCKETNAME
 
 
 const unlinkFile = util.promisify(fs.unlink)
-const s3 = new S3({
-    region,
-    accessKeyId,
-    secretAccessKey,
-    signatureVersion: 'v4',
-})
+// const s3 = new S3({
+//     region,
+//     accessKeyId,
+//     secretAccessKey,
+//     signatureVersion: 'v4',
+// })
+
+// Configure AWS S3 client
+// const s3 = new S3({
+//   region: process.env.region,
+//     accessKeyId: process.env.accessKeyId,
+//     secretAccessKey: process.env.secretAccessKey,
+//      signatureVersion: 'v4',
+  
+// });
+ const s3 = new S3({
+    accessKeyId: process.env.accessKeyId,
+    secretAccessKey: process.env.secretAccessKey,
+    region: process.env.region
+});
+
 
 
 
@@ -61,7 +76,7 @@ class UploadS3 {
                     var timestamp = (new Date).getTime().toString()
                     let rand = random('alphanumeric');
 
-                    console.log("S3_upload",);
+                    console.log("S3_upload",temp_files_bucketName);
                     console.log("file path", data.file_path);
                     console.log("file fileName", data.fileName);
 

@@ -1286,7 +1286,7 @@ class SalesRepShopOwnerService {
         }
 
 
-       this.shopPendingPaymentLedgerDownloadService = async (request, callback) => {
+        this.salesRepUserPaymentLedgerDownloadService = async (request, callback) => {
             try {
                 var response = {}
                 console.log("ledger1 auth data", request.body.auth)
@@ -1302,16 +1302,20 @@ class SalesRepShopOwnerService {
                 } else {
                     var customerID = findCustomer.data[0].customerID
 
-                    var rawdata = fs.readFileSync(path.resolve(__dirname, `../../../../../www/html/${process.env.PENDING_LEDGER_FILE}`))
+                    // console.log("path.resolve(__dirname",path.resolve(__dirname, `../../../../../www/html/${process.env.USER_LEDGER}`))
 
-                    // console.log("file path ssss", path.resolve(__dirname, `../../../../../www/html/${process.env.USER_LEDGER}`))
-
+                    var rawdata = fs.readFileSync(path.resolve(__dirname, `../../../../../www/html/${process.env.USER_LEDGER}`))
 
                     var ledgerData = JSON.parse(parser.toJson(rawdata, {
                         reversible: true
                     }));
+                    // let ledgerData;
+
+                    //      ledgerData = JSON.parse(rawdata);
+    
+// console.log(ledgerData,'===ledgerData')
                     var newrawdata = ledgerData['ENVELOPE']['LEDGERS']
-                    console.log("newrawdata", newrawdata)
+                    // console.log("newrawdata",newrawdata)
                     if (newrawdata.length > 0) {
 
                         var filterLedger = newrawdata.filter(function (item) {
@@ -1331,25 +1335,28 @@ class SalesRepShopOwnerService {
                             } else if (typeof ledgerHistory === 'object') {
                                 historyResult.push(ledgerHistory)
                             }
-                            console.log("historyResult first", historyResult)
+                            // console.log("historyResult first2", historyResult)
 
 
                             var resp = []
+                            if (historyResult.lenth != 0 &&
+                                data.fromDate.length != 0 && data.toDate.length != 0) {
+                                // console.log("historyResult", historyResult)
+                                historyResult.forEach((val, ind) => {
+                                    var date = new Date(val.DATE.$t)
+                                    // console.log("date history", date)
+                                    var startDate = new Date(data.fromDate);
+                                    var toDate = new Date(data.toDate);
+                                    // console.log("date startDate", startDate)
+                                    // console.log("date toDate", toDate)
 
-
-                            historyResult.forEach((val, ind) => {
-                                let s_no = ind + 1
-                                let obj = {}
-                                obj.date = val.DATE['$t']
-                                obj.refNumber = val.VOUCHERNUMBER['$t']
-                                obj.pendingAmount = val.CLOSINGBALANCE['$t']
-                                obj.openingAmount = val.OPENINGBALANCE['$t']
-                                obj.billDue = val.BILLDUE['$t']
-                                obj.overDue = val.BILLOVERDUE['$t']
-                                obj.no = s_no
-                                resp.push(obj)
-                            })
-
+                                    if (startDate.getTime() <= date.getTime() && toDate.getTime() >= date.getTime()) {
+                                        resp.push(val)
+                                    }
+                                })
+                            } else {
+                                resp = historyResult
+                            }
 
                             // console.log("response", resp)
 
@@ -1371,16 +1378,30 @@ class SalesRepShopOwnerService {
                                 //     }
                                 // }
                             };
-
+                            var ledgers = []
+                            resp.forEach((val, ind) => {
+                                let obj = {}
+                                let ledger_date = val.DATE.$t.length > 0 ? val.DATE.$t.split('-') : val.DATE.$t
+                                obj.no = ind + 1
+                                obj.date = ledger_date[1] + '-' + ledger_date[2] + '-' + ledger_date[0]
+                                obj.particulars = val.PARTICULARS.$t
+                                // obj.amount = val.AMOUNT.$t
+                                obj.voucherNmber = val.VOUCHERNUMBER.$t
+                                obj.credit = val.TYPE.$t == 'Credit' ? val.AMOUNT.$t : null
+                                obj.debit = val.TYPE.$t == 'Debit' ? val.AMOUNT.$t : null
+                                obj.voucherType = val.VOUCHERTYPE.$t
+                                ledgers.push(obj)
+                            })
                             // require('../../.././../../www')
 
-                            var html = fs.readFileSync(path.resolve(__dirname, `../../.././../../www/${process.env.PENDING_PAYMENT_PDF_TEMPLATE}`), "utf8");
+                            var html = fs.readFileSync(path.resolve(__dirname, `../../.././../../www/${process.env.PDF_TEMPLATE}`), "utf8");
                             var timestamp = (new Date).getTime().toString()
 
                             var ledgerObj = {}
-                            ledgerObj.openingBalance = filterLedger[0].TOTALOPENING.$t
-                            ledgerObj.outstandingBalance = filterLedger[0].TOTALPENDING.$t
-
+                            ledgerObj.openingBalance = filterLedger[0].OPENINGBALANCE.$t
+                            ledgerObj.outstandingBalance = filterLedger[0].CLOSINGBALANCE.$t
+                            ledgerObj.totalDebit = filterLedger[0].TOTALDEBIT.$t
+                            ledgerObj.totalCredit = filterLedger[0].TOTALCREDIT.$t
 
                             var shopAddress = findCustomer.data[0].shopAddress.length > 0 ? findCustomer.data[0].shopAddress.split(',')
                                 : []
@@ -1404,12 +1425,12 @@ class SalesRepShopOwnerService {
                             var document = {
                                 html: html,
                                 data: {
-                                    ledgers: resp,
+                                    ledgers: ledgers,
                                     shopName: findCustomer.data[0].shopName,
                                     shopAddress: output,
                                     ledgerObj: ledgerObj
                                 },
-                                path: path.resolve(__dirname, `../../../../../www/html/uploads/pendingPaymentLedger-${timestamp}.pdf`),
+                                path: path.resolve(__dirname, `../../../../../www/html/uploads/UserLedger-${timestamp}.pdf`),
                                 type: "",
                             };
                             // require('../../../../www/html/uploads')
@@ -1467,10 +1488,11 @@ class SalesRepShopOwnerService {
                     response.error = true
                     response.statusCode = STRINGS.errorStatusCode
                     response.message = STRINGS.oopsErrorMessage
-                  }          
+                  }
             }
             callback(response)
         }
+
 
         
 

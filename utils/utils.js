@@ -266,10 +266,10 @@ this.textLocalSendSms = (data) => {console.log('HHTUI')
 
     this.UserLedger = (customerID) => {
       try {
+console.log('HIIIII',__dirname)
         return new Promise(function (resolve) {
           var resp = {}
-          // var rawdata = fs.readFileSync(path.resolve(__dirname, `../../html/${process.env.USER_LEDGER}`))
-          var rawdata = fs.readFileSync(path.resolve(__dirname, `../../../../../www/html/${process.env.USER_LEDGER}`))
+          var rawdata = fs.readFileSync(path.resolve(__dirname, `../../html/${process.env.USER_LEDGER}`))
           var result = []
           var ledgerData = JSON.parse(parser.toJson(rawdata, {
             reversible: true

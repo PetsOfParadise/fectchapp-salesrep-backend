@@ -6,12 +6,14 @@ import Utils from '../../../utils/utils'
 import SalesRepActivityModel from '../models/salesRepActivityModel'
 import NotificationsService from '../../../utils/notificationsService'
 import SmsTemplates from '../../../smsTemplates'
+import UploadS3 from '../../../config/s3.upload'
 
 require('dotenv').config();
 
 const salesRepActivityModel = new SalesRepActivityModel
 const notificationsService = new NotificationsService
 const smsTemplates = new SmsTemplates
+const uploadS3 = new UploadS3
 
 const utils = new Utils()
 
@@ -403,6 +405,7 @@ class SalesRepActivityService {
                                 response.error = false
                                 response.statusCode = STRINGS.successStatusCode
                                 response.isUpdate = 1
+                                response.activityId = save.data[0]
                                 response.message = STRINGS.SuccessString
                             }
                         } else {
@@ -755,6 +758,7 @@ class SalesRepActivityService {
                         response.error = false
                         response.statusCode = STRINGS.successStatusCode
                         response.isUpdate = 1
+                        response.activityId = save.data[0]
                         response.message = STRINGS.SuccessString
                     }
                 }
@@ -1073,6 +1077,7 @@ class SalesRepActivityService {
                     response.error = false
                     response.statusCode = STRINGS.successStatusCode
                     response.isUpdate = 1
+                    response.activityId = save.data[0]
                     response.message = STRINGS.SuccessString
                 }
             } catch (e) {
@@ -1921,12 +1926,56 @@ class SalesRepActivityService {
             callback(response)
         }
 
+        this.saveActivityPhotoService = async (request, callback) => {
+            try {
+                var response = {}
+                var photoData = {}
+                photoData.activityId = request.activityId
 
+                // Upload to S3 if a file was provided via multer
+                if (request.file && request.file.path) {
+                    const s3Key = `activity_photos/activity_${request.activityId}_${Date.now()}_${request.file.filename}`
+                    const s3Result = await uploadS3.S3_upload({
+                        file_path: request.file.path,
+                        fileName: s3Key
+                    })
+                    if (s3Result.error) {
+                        response.error = true
+                        response.statusCode = STRINGS.successStatusCode
+                        response.message = 'S3 upload failed'
+                        return callback(response)
+                    }
+                    photoData.imageUrl = s3Result.data // S3 URL
+                } else {
+                    photoData.imageUrl = request.imageUrl
+                }
 
+                photoData.latitude = request.latitude || null
+                photoData.longitude = request.longitude || null
+                photoData.address = request.address || null
+                photoData.capturedAt = request.capturedAt ? new Date(request.capturedAt) : new Date()
 
-
-
-
+                var save = await salesRepActivityModel.saveActivityPhotoModel(photoData)
+                if (save.error) {
+                    response.error = true
+                    response.statusCode = STRINGS.successStatusCode
+                    response.message = STRINGS.commanErrorString
+                } else {
+                    response.error = false
+                    response.statusCode = STRINGS.successStatusCode
+                    response.message = STRINGS.SuccessString
+                    response.data = { id: save.data[0], imageUrl: photoData.imageUrl }
+                }
+                callback(response)
+            } catch (e) {
+                console.log(e)
+                var response = {}
+                response.error = true
+                response.statusCode = STRINGS.successStatusCode
+                response.message = STRINGS.commanErrorString
+                callback(response)
+            }
+        }
     }
 }
 

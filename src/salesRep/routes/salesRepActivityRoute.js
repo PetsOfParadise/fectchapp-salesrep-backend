@@ -1,10 +1,27 @@
 import express from "express";
 import passport from 'passport'
+import multer from 'multer'
+import path from 'path'
+import fs from 'fs'
 
 import { check, validationResult } from "express-validator";
 import SalesRepActivityService from "../service/salesRepActivityService";
 
 const salesRepActivityService = new SalesRepActivityService
+
+// Multer storage config for activity photos
+const activityPhotoStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const dir = path.join(__dirname, '../../../uploads/activity_photos')
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true })
+    cb(null, dir)
+  },
+  filename: function (req, file, cb) {
+    const ext = path.extname(file.originalname) || '.jpg'
+    cb(null, `activity_${Date.now()}_${Math.round(Math.random() * 1e9)}${ext}`)
+  }
+})
+const uploadActivityPhoto = multer({ storage: activityPhotoStorage })
 
 
 
@@ -59,6 +76,24 @@ router.post('/updateActivity', [
     return response.send(results)
   })
 })
+
+router.post('/saveActivityPhoto',
+  passport.authenticate('jwt', { session: false, failureRedirect: failureRedirect }),
+  uploadActivityPhoto.single('image'),
+  (request, response) => {
+    if (!request.body.activityId) {
+      return response.send({ error: true, message: 'Invalid activityId' })
+    }
+    if (!request.file) {
+      return response.send({ error: true, message: 'image file is required' })
+    }
+    // Pass file info to the service so it can upload to S3
+    request.body.file = request.file
+    request.body.auth = request.user
+    salesRepActivityService.saveActivityPhotoService(request.body, function (results) {
+      return response.send(results)
+    })
+  })
 
 router.post('/getActivityTracker', passport.authenticate('jwt', { session: false, failureRedirect: failureRedirect }), [
   check('month').trim().exists().isLength({ min: 1 }).withMessage('month is empty'),

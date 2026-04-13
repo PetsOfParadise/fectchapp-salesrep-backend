@@ -1031,14 +1031,31 @@ class SalesRepActivityModel {
 
 
 
+
+
+
+
+
+    this.saveActivityPhotoModel = function (data) {
+      var response = {}
+      return new Promise(function (resolve) {
+        knex.db('salesRepActivityPhotos')
+          .insert(data)
+          .then((result) => {
+            response.error = false
+            response.data = result
+          })
+          .catch((error) => {
+            response.error = true
+            response.message = error.message
+          })
+          .finally(() => {
+            resolve(response)
+          })
+      })
+    }
+
   }
 }
-
-
-
-
-
-
-
 
 export default SalesRepActivityModel;

@@ -269,25 +269,32 @@ this.textLocalSendSms = (data) => {console.log('HHTUI')
 console.log('HIIIII',__dirname)
         return new Promise(function (resolve) {
           var resp = {}
-          var rawdata = fs.readFileSync(path.resolve(__dirname, `../../html/${process.env.USER_LEDGER}`))
+          var rawdata
+          try {
+            rawdata = fs.readFileSync(path.resolve(__dirname, `../../html/${process.env.USER_LEDGER}`))
+          } catch (readErr) {
+            return resolve([])
+          }
           var result = []
           var ledgerData = JSON.parse(parser.toJson(rawdata, {
             reversible: true
           }));
-          var newrawdata = ledgerData['ENVELOPE']['LEDGERS']
-          if (newrawdata.length > 0) {
+          var newrawdata = ledgerData && ledgerData['ENVELOPE'] && ledgerData['ENVELOPE']['LEDGERS']
+          if (newrawdata && !Array.isArray(newrawdata)) newrawdata = [newrawdata]
+          if (newrawdata && newrawdata.length > 0) {
 
             var filterLedger = newrawdata.filter(function (item) {
               // console.log("datas",item)
-              return item.LEDGERCODE.$t == customerID
+              return item && item.LEDGERCODE && item.LEDGERCODE.$t == customerID
             })
             // console.log("filterLedger",filterLedger[0].HISTORY)
             if (filterLedger.length > 0) {
               result = filterLedger
             }
             resp.error = false
-            resolve(result)
+            return resolve(result)
           }
+          resolve(result)
         })
       } catch (e) {
         console.log("error", e)

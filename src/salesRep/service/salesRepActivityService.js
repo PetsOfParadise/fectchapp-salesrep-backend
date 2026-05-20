@@ -66,6 +66,7 @@ class SalesRepActivityService {
                                 response.statusCode = STRINGS.successStatusCode
                                 response.message = STRINGS.commanErrorString
                             } else {
+                                response.activityId = save.data[0]
 
 
                                 let orderTimeHours = new Date(localTime).getHours()
@@ -805,6 +806,7 @@ class SalesRepActivityService {
                     response.statusCode = STRINGS.successStatusCode
                     response.message = STRINGS.commanErrorString
                 } else {
+                    response.activityId = save.data[0]
 
 
 

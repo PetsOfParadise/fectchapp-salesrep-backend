@@ -1039,8 +1039,14 @@ class SalesRepActivityModel {
     this.saveActivityPhotoModel = function (data) {
       var response = {}
       return new Promise(function (resolve) {
+        // Keep only the latest photo per activity: remove any existing
+        // photos for this activity before inserting the new one.
         knex.db('salesRepActivityPhotos')
-          .insert(data)
+          .where({ activityId: data.activityId })
+          .del()
+          .then(() => {
+            return knex.db('salesRepActivityPhotos').insert(data)
+          })
           .then((result) => {
             response.error = false
             response.data = result

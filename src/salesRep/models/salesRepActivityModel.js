@@ -1061,6 +1061,52 @@ class SalesRepActivityModel {
       })
     }
 
+    // Remove a visit/activity and its child rows (photos; check-in/out is removed
+    // automatically via the ON DELETE CASCADE FK). Used to roll back so a visit is
+    // never left half-saved.
+    this.deleteActivityModel = function (activityId) {
+      var response = {}
+      return new Promise(function (resolve) {
+        knex.db('salesRepActivityPhotos')
+          .where({ activityId: activityId })
+          .del()
+          .then(() => {
+            return knex.db('salesRepActivity').where({ id: activityId }).del()
+          })
+          .then((result) => {
+            response.error = false
+            response.data = result
+          })
+          .catch((error) => {
+            response.error = true
+            response.message = error.message
+          })
+          .finally(() => {
+            resolve(response)
+          })
+      })
+    }
+
+    // Save a check-in / check-out record linked to a visit activity.
+    this.saveCheckInOutModel = function (data) {
+      var response = {}
+      return new Promise(function (resolve) {
+        knex.db('salesRepActivityCheckInOut')
+          .insert(data)
+          .then((result) => {
+            response.error = false
+            response.data = result
+          })
+          .catch((error) => {
+            response.error = true
+            response.message = error.message
+          })
+          .finally(() => {
+            resolve(response)
+          })
+      })
+    }
+
   }
 }
 

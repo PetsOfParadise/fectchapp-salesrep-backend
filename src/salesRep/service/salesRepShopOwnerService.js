@@ -467,6 +467,16 @@ class SalesRepShopOwnerService {
                             } else {
                                 var userLedgerAmount = UserLedger.length > 0 ? parseFloat(UserLedger[0].CLOSINGBALANCE.$t) : 0
 
+                                if (length === 0) {
+                                    var orderInfo = orders.data[0]
+                                    orderInfo.outstandingAmount = userLedgerAmount
+                                    response.error = false
+                                    response.statusCode = STRINGS.successStatusCode
+                                    response.message = STRINGS.SuccessString
+                                    response.orderDetails = orderInfo
+                                    response.orderItems = []
+                                    return callback(response)
+                                }
 
                                 orderItemsList.forEach(async function (item, index) {
                                     var object = {

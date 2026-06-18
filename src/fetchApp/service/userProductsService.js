@@ -1595,7 +1595,7 @@ class UserProductsService {
 
                                 profile.data[0].cashDiscount = profile.data[0].cashDiscount == null ? 0 : profile.data[0].cashDiscount
                                 // if (profile.data[0].cashOnCarry == 1 && profile.data[0].cashDiscount > 0) {
-                                if (profile.data[0].cashOnCarry == 1) {
+                                if (profile.data[0].cashDiscount > 0) {
 
                                     console.log("cashOnCarry customer")
                                     // subtotalValue = subtotalValue * profile.data[0].cashDiscount / 100
@@ -2114,7 +2114,7 @@ class UserProductsService {
 
 
                                 profile.data[0].cashDiscount = profile.data[0].cashDiscount == null ? 0 : profile.data[0].cashDiscount
-                                if (profile.data[0].cashOnCarry == 1) {
+                                if (profile.data[0].cashDiscount > 0) {
                                     // if (profile.data[0].cashOnCarry == 1 && profile.data[0].cashDiscount > 0) {
 
                                     // console.log("cashOnCarry customer")
@@ -3010,7 +3010,7 @@ class UserProductsService {
 
                                     profile.data[0].cashDiscount = profile.data[0].cashDiscount == null || 0 ? 0 : profile.data[0].cashDiscount
 
-                                    let cashDiscountAmount = profile.data[0].cashOnCarry == 1 ?
+                                    let cashDiscountAmount = profile.data[0].cashDiscount ?
                                         (orderObject.totalAmount * (profile.data[0].cashDiscount / 100)).toFixed(2) : 0
                                     let additionalDiscountAmount = profile.data[0].isNonGst == 1 ? total.data[0].gsttotal.toFixed(2) : 0
 
@@ -3049,7 +3049,7 @@ class UserProductsService {
                                     orderObject.outletId = request.auth.outletId
                                     profile.data[0].cashDiscount = profile.data[0].cashDiscount == null || 0 ? 0 : profile.data[0].cashDiscount
 
-                                    orderObject.cashDiscountAmount = profile.data[0].cashOnCarry == 1 ?
+                                    orderObject.cashDiscountAmount = profile.data[0].cashDiscount ?
                                         (orderObject.totalAmount * (profile.data[0].cashDiscount / 100)).toFixed(2) : 0
                                     orderObject.additionalDiscountAmount = profile.data[0].isNonGst == 1 ? total.data[0].gsttotal.toFixed(2) : 0
 

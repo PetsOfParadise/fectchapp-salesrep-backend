@@ -3051,6 +3051,7 @@ class UserProductsService {
 
                                     orderObject.cashDiscountAmount = profile.data[0].cashDiscount ?
                                         (orderObject.totalAmount * (profile.data[0].cashDiscount / 100)).toFixed(2) : 0
+                                    orderObject.cashDiscountPercentage = profile.data[0].cashDiscount || 0
                                     orderObject.additionalDiscountAmount = profile.data[0].isNonGst == 1 ? total.data[0].gsttotal.toFixed(2) : 0
 
                                     orderObject.balanceAmount = orderObject.balanceAmount - orderObject.cashDiscountAmount

@@ -131,9 +131,10 @@ class SalesRepProductModel {
             var response = {}
             return new Promise(function (resolve) {
                 knex.db('cartItems')
-                    .select('cartItems.*', 'productCatalog.MRP')
+                    // No productCatalog join: callers read only quantity/attribute/options/id,
+                    // and joining it without a catalogId filter picked an arbitrary catalog's MRP.
+                    .select('cartItems.*')
                     .innerJoin('products', 'products.id', '=', 'cartItems.productId')
-                    .innerJoin('productCatalog', 'cartItems.productId', '=', 'productCatalog.productId')
                     .where({
                         'cartItems.userId': userId,
                         'cartItems.salesRepID': salesrepId,
@@ -266,12 +267,20 @@ class SalesRepProductModel {
         this.checkSalesMyCartProduct = function (userId, productId, salesRepID) {
             var response = {}
             return new Promise(function (resolve) {
+                // MRP must come from the shop's own catalog, same as the cart totals.
+                // The catalog is derived from the cart row's shop (cartItems.userId ->
+                // users.userCatalogId) so no extra argument has to be threaded in here.
                 knex.db('cartItems')
-                    .select('cartItems.*', 'products.MRP')
+                    .select('cartItems.*', 'productCatalog.MRP')
                     .innerJoin('products', 'products.id', '=', 'cartItems.productId')
+                    .innerJoin('users', 'users.id', '=', 'cartItems.userId')
+                    .innerJoin('productCatalog', function () {
+                        this.on('productCatalog.productId', '=', 'cartItems.productId')
+                            .andOn('productCatalog.catalogId', '=', 'users.userCatalogId')
+                    })
                     .where({
-                        'userId': userId,
-                        'productId': productId,
+                        'cartItems.userId': userId,
+                        'cartItems.productId': productId,
                         'cartType': 'SALESREP',
                         salesRepID: salesRepID
 
@@ -588,7 +597,10 @@ class SalesRepProductModel {
         this.salesRepCardTotalSumValue = function (data) {
             var response = {}
             return new Promise(function (resolve) {
-                knex.db.raw('SELECT SUM(discountAmount) as finaltotal, SUM(gstAmount) as gsttotal FROM (SELECT cartItems.id, products.productGST, cartItems.productId, cartItems.quantity, subCategory.discount, SUM(products.MRP * cartItems.quantity) AS totalamt ,SUM(products.MRP * cartItems.quantity - ( products.MRP * cartItems.quantity * ( discountValue/100))) AS discountAmount, SUM((products.MRP * cartItems.quantity - ( products.MRP * cartItems.quantity * ( discountValue/100))) * ( products.productGST/100) ) AS gstAmount FROM `cartItems` INNER JOIN products ON cartItems.productId = products.id INNER JOIN subCategory ON products.subcategoryId = subCategory.id INNER JOIN disCountDetails ON products.id = disCountDetails.productId WHERE userId=? AND disCountDetails.discountId=? AND cartType=? AND cartItems.salesRepID=? GROUP BY cartItems.quantity, products.MRP, cartItems.id) t1', [data.shopId, data.auth.discountId, 'SALESREP', data.auth.id])
+                // Price from the shop's own catalog (productCatalog.MRP), not the global
+                // products.MRP — the cart line items already use the catalog, so reading
+                // products.MRP here made the totals disagree with the items above them.
+                knex.db.raw('SELECT SUM(discountAmount) as finaltotal, SUM(gstAmount) as gsttotal FROM (SELECT cartItems.id, products.productGST, cartItems.productId, cartItems.quantity, subCategory.discount, SUM(productCatalog.MRP * cartItems.quantity) AS totalamt ,SUM(productCatalog.MRP * cartItems.quantity - ( productCatalog.MRP * cartItems.quantity * ( discountValue/100))) AS discountAmount, SUM((productCatalog.MRP * cartItems.quantity - ( productCatalog.MRP * cartItems.quantity * ( discountValue/100))) * ( products.productGST/100) ) AS gstAmount FROM `cartItems` INNER JOIN products ON cartItems.productId = products.id INNER JOIN productCatalog ON productCatalog.productId = cartItems.productId AND productCatalog.catalogId = ? INNER JOIN subCategory ON products.subcategoryId = subCategory.id INNER JOIN disCountDetails ON products.id = disCountDetails.productId WHERE userId=? AND disCountDetails.discountId=? AND cartType=? AND cartItems.salesRepID=? GROUP BY cartItems.quantity, productCatalog.MRP, cartItems.id) t1', [data.auth.catalogId, data.shopId, data.auth.discountId, 'SALESREP', data.auth.id])
                     .then((result) => {
                         response.error = false
                         response.data = result[0]

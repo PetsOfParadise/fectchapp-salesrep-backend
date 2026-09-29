@@ -52,7 +52,9 @@ class UserProductsService {
                     exploreListService(request),
                     myCartInfo(request.auth.id, request.auth),
                     userProductsModel.profileModel(request.auth.id),
-                    userProductsModel.notificationCountModel(request)
+                    userProductsModel.notificationCountModel(request),
+                    userProductsModel.activeAnnouncementsModel(),
+                    userProductsModel.announcementHeadingModel()
                 ])
                     .then(result => {
                         // console.log("homePageService**", result)
@@ -74,6 +76,8 @@ class UserProductsService {
                         response.exploreProducts = result[4].exploreList
                         response.newArrivals = result[2].data
                         response.feed = result[1].feedList
+                        response.announcements = result[8].data
+                        response.announcementHeading = result[9].data
                         callback(response)
                     })
                     .catch(error => {

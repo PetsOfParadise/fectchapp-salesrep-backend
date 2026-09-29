@@ -1424,6 +1424,55 @@ class UserProductsModel {
       })
     }
 
+    // Animated announcements uploaded from the admin panel. Only the live ones,
+    // in the order the admin arranged them. Resolves with an empty list on failure
+    // so the home page never breaks because of this section.
+    this.activeAnnouncementsModel = function () {
+      var response = {}
+      return new Promise(function (resolve) {
+        knex.db('appAnnouncements')
+          .select('id', 'announcementTitle', 'announcementMedia', 'mediaType', 'redirectLink')
+          .where('status', 1)
+          .orderBy('sortOrder', 'asc')
+          .orderBy('id', 'desc')
+          .then((result) => {
+            response.error = false
+            response.data = result
+          })
+          .catch((error) => {
+            console.log('activeAnnouncementsModel', error)
+            response.error = true
+            response.data = []
+          })
+          .finally(() => {
+            resolve(response)
+          })
+      })
+    }
+
+    // Heading shown above the announcement carousel, editable from the admin panel.
+    // Falls back to a sensible default so the app never renders an empty header.
+    this.announcementHeadingModel = function () {
+      var response = {}
+      return new Promise(function (resolve) {
+        knex.db('appSettings')
+          .select('announcementHeading')
+          .first()
+          .then((result) => {
+            response.error = false
+            response.data = result && result.announcementHeading ? result.announcementHeading : 'Announcements'
+          })
+          .catch((error) => {
+            console.log('announcementHeadingModel', error)
+            response.error = true
+            response.data = 'Announcements'
+          })
+          .finally(() => {
+            resolve(response)
+          })
+      })
+    }
+
     // Order placed
     this.productImages = function (data) {
       var response = {}

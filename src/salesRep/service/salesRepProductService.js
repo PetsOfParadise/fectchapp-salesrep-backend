@@ -117,7 +117,7 @@ class SalesRepHomeService {
                             var cartCount = 0
                             var attribute = []
                             var options = []
-                            if (cart.data.length > 0) {
+                            if (cart && cart.data && cart.data.length > 0) {
                                 var cartCount = cart.data[0].quantity
                                 var attribute = JSON.parse(cart.data[0].attribute)
                                 var options = JSON.parse(cart.data[0].options)
@@ -222,7 +222,7 @@ class SalesRepHomeService {
                             var stockCount = product.data[0].defaultQuantity > 0 ? product.data[0].defaultQuantity : product.data[0].productStockCount
                             var maxQty = product.data[0].maxQty
                             var cart = await salesRepProductModel.checkSalesRepCartProduct(request)
-                            if (cart.data.length > 0) {
+                            if (cart && cart.data && cart.data.length > 0) {
 
                                 if (request.key != 0) {
                                     var defaultQuantity = product.data[0].defaultQuantity
@@ -2165,7 +2165,7 @@ class SalesRepHomeService {
                                 var attribute = []
                                 var options = []
                                 console.log("cart", cart.data)
-                                if (cart.data.length > 0) {
+                                if (cart && cart.data && cart.data.length > 0) {
                                     var cartCount = cart.data[0].quantity
                                     var attribute = JSON.parse(cart.data[0].attribute) == null ? [] : JSON.parse(cart.data[0].attribute)
                                     var options = JSON.parse(cart.data[0].options) == null ? [] : JSON.parse(cart.data[0].options)
@@ -2484,7 +2484,7 @@ class SalesRepHomeService {
                                 var cartCount = 0
                                 var selectedAttribute = []
                                 var selectedOptions = []
-                                if (cart.data.length > 0) {
+                                if (cart && cart.data && cart.data.length > 0) {
                                     var selectedAttribute = JSON.parse(cart.data[0].attribute)
                                     var selectedOptions = JSON.parse(cart.data[0].options)
                                     var cartCount = cart.data[0].quantity
@@ -2719,7 +2719,7 @@ class SalesRepHomeService {
                                     var attribute = []
                                     var options = []
                                     // console.log("cart",cart.data)
-                                    if (cart.data.length > 0) {
+                                    if (cart && cart.data && cart.data.length > 0) {
                                         var cartCount = cart.data[0].quantity
                                         var attribute = JSON.parse(cart.data[0].attribute) == null ? [] : JSON.parse(cart.data[0].attribute)
                                         var options = JSON.parse(cart.data[0].options) == null ? [] : JSON.parse(cart.data[0].options)
@@ -3381,7 +3381,7 @@ class SalesRepHomeService {
                     var cartCount = 0
                     var attribute = []
                     var options = []
-                    if (cart.data.length > 0) {
+                    if (cart && cart.data && cart.data.length > 0) {
                         var cartCount = cart.data[0].quantity
                         var attribute = JSON.parse(cart.data[0].attribute)
                         var options = JSON.parse(cart.data[0].options)

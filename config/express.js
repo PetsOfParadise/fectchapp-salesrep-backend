@@ -73,7 +73,12 @@ app.get("/", function (req, res) {
 
 
 
-app.get('/unauthorized', function (req, res) {
+// Both spellings answer here. FAILUREREDIRECT is '/api/unauthorized' because in
+// production this API is served behind /api/, but locally it is mounted at the
+// root - so that redirect landed on a route that did not exist and every auth
+// failure reached the client as a 404 instead of this 401 body. Accepting both
+// paths keeps the response identical in either environment; nothing else changes.
+app.get(['/unauthorized', '/api/unauthorized'], function (req, res) {
     res.send(
         {
             error: true,

@@ -718,6 +718,17 @@ class UserProductsService {
         }
 
         this.productList = async (request, callback) => {
+            // Reply at most once. Several branches below call back and then carry on;
+            // if anything throws afterwards the catch calls back a second time, the
+            // route sends the response twice, and Express throws
+            // ERR_HTTP_HEADERS_SENT - an uncaught async throw that kills the process
+            // on Node 16+. Swallowing the second reply keeps the API up.
+            let replied = false
+            const reply = (payload) => {
+                if (replied) return
+                replied = true
+                callback(payload)
+            }
             try {
                 var response = {}
                 // if (request.isSubcategory == '1') {
@@ -738,7 +749,7 @@ class UserProductsService {
                     response.error = true
                     response.statusCode = STRINGS.successStatusCode
                     response.message = STRINGS.commanErrorString
-                    callback(response)
+                    reply(response)
                 } else {
                     // console.log("ProductResponse****", productResponse)
                     if (productResponse.data.length > 0) {
@@ -803,7 +814,7 @@ class UserProductsService {
                                     response.error = true
                                     response.statusCode = STRINGS.successStatusCode
                                     response.message = STRINGS.commanErrorString
-                                    callback(response)
+                                    reply(response)
                                 } else if (checkProductNoyifyModel.data.length > 0) {
                                     productNotify = checkProductNoyifyModel.data[0].productUpdated == 1 ? 0 : 1
                                 }
@@ -891,7 +902,7 @@ class UserProductsService {
                                     response.message = STRINGS.SuccessString
                                     response.isPriceVisible = request.auth.isPriceVisible
                                     response.products = products
-                                    callback(response)
+                                    reply(response)
                                 }
                             }
 
@@ -902,7 +913,7 @@ class UserProductsService {
                             response.pages = 0
                             response.isPriceVisible = request.auth.isPriceVisible
                             response.products = []
-                            callback(response)
+                            reply(response)
                         }
 
                     } else {
@@ -912,7 +923,7 @@ class UserProductsService {
                         response.pages = 0
                         response.isPriceVisible = request.auth.isPriceVisible
                         response.products = productResponse.data
-                        callback(response)
+                        reply(response)
                     }
                 }
             } catch (e) {
@@ -920,7 +931,7 @@ class UserProductsService {
                 response.error = true
                 response.statusCode = STRINGS.errorStatusCode
                 response.message = STRINGS.oopsErrorMessage
-                callback(response)
+                reply(response)
             }
         }
 
@@ -1764,10 +1775,26 @@ class UserProductsService {
 
 
         this.viewCartDetailsByPage = async (request, callback) => {
+            // Reply at most once - see the note on productList. Without this, a throw
+            // after an earlier reply makes the catch reply again and Express raises
+            // ERR_HTTP_HEADERS_SENT, which takes the process down on Node 16+.
+            let replied = false
+            const reply = (payload) => {
+                if (replied) return
+                replied = true
+                callback(payload)
+            }
             try {
                 var response = {}
                 console.log("request", request.auth)
                 var cartAll = await userProductsModel.getCardItems(request.userId, request.auth)
+                // getCardItems returns an error-shaped object (no `data`) when the query
+                // fails, and every loop below reads cartAll.data.length. Normalise once
+                // so a failed cart lookup returns an empty cart instead of throwing
+                // "Cannot read properties of undefined (reading 'length')".
+                if (!cartAll || !cartAll.data) {
+                    cartAll = Object.assign({}, cartAll, { data: [] })
+                }
                 var arr = []
 
                 var unique = {};
@@ -1784,7 +1811,7 @@ class UserProductsService {
                             response.error = true
                             response.statusCode = STRINGS.successStatusCode
                             response.message = STRINGS.commanErrorString
-                            return callback(response)
+                            return reply(response)
                         }
                     } else {
                         unique[val.productCode] = 0;
@@ -1796,7 +1823,7 @@ class UserProductsService {
                             response.error = true
                             response.statusCode = STRINGS.successStatusCode
                             response.message = STRINGS.commanErrorString
-                            return callback(response)
+                            return reply(response)
                         }
                     }
 
@@ -1818,7 +1845,7 @@ class UserProductsService {
                     //         response.error = true
                     //         response.statusCode = STRINGS.successStatusCode
                     //         response.message = STRINGS.commanErrorString
-                    //         return callback(response)
+                    //         return reply(response)
                     //     }
                     // } else 
                     if (val.quantity > val.productStockCount && val.quantity > 0) {
@@ -1828,7 +1855,7 @@ class UserProductsService {
                             response.error = true
                             response.statusCode = STRINGS.successStatusCode
                             response.message = STRINGS.commanErrorString
-                            return callback(response)
+                            return reply(response)
                         }
                         arr.push(val)
                     } else if (val.quantity == 0 || val.quantity < 0) {
@@ -1838,7 +1865,7 @@ class UserProductsService {
                             response.error = true
                             response.statusCode = STRINGS.successStatusCode
                             response.message = STRINGS.commanErrorString
-                            return callback(response)
+                            return reply(response)
                         }
                     }
                     else {
@@ -1862,7 +1889,7 @@ class UserProductsService {
                     //         response.error = true
                     //         response.statusCode = STRINGS.successStatusCode
                     //         response.message = STRINGS.commanErrorString
-                    //         return callback(response)
+                    //         return reply(response)
                     //     }
                     // } else 
 
@@ -1873,7 +1900,7 @@ class UserProductsService {
                             response.error = true
                             response.statusCode = STRINGS.successStatusCode
                             response.message = STRINGS.commanErrorString
-                            return callback(response)
+                            return reply(response)
                         }
                         arr.push(val)
                     }
@@ -2291,7 +2318,7 @@ class UserProductsService {
                                                 // response.statusCode = STRINGS.errorStatusCode
                                                 // response.message = "Sorry, Your credit Period is overdue, Can't place order"
                                                 // console.log("response", response)
-                                                // return callback(response)
+                                                // return reply(response)
 
                                                 response.isOverdue = 1
                                             }
@@ -2351,7 +2378,7 @@ class UserProductsService {
                     response.message = STRINGS.oopsErrorMessage
                 }
             }
-            callback(response)
+            reply(response)
         }
 
 

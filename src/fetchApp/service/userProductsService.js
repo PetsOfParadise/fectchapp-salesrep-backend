@@ -16,6 +16,24 @@ import UploadS3 from '../../../config/s3.upload'
 import SmsTemplates from '../../../smsTemplates'
 import reader from 'xlsx'
 
+// Reply at most once per request. Several services call their callback inside the
+// `try` and then AGAIN from the `catch`, so Express sends the response twice and
+// throws ERR_HTTP_HEADERS_SENT - an async throw that kills the process on Node 16+.
+//
+// Deliberately a module-level function taking `cb` as an argument rather than a
+// per-service closure over the enclosing `callback` parameter. An earlier version
+// used such a closure and production logged `ReferenceError: callback is not
+// defined` from this file; the cause was never pinned down (the same build
+// transpiles the pre-existing nested `async (item, index)` closures over
+// `callback` without trouble). Passing the callback in removes the question
+// entirely - every reference now sits in the async function body itself, exactly
+// like the direct call sites that have always worked.
+const replyOnce = (state, cb, payload) => {
+    if (state.replied) return
+    state.replied = true
+    cb(payload)
+}
+
 
 
 require('dotenv').config();
@@ -723,12 +741,7 @@ class UserProductsService {
             // route sends the response twice, and Express throws
             // ERR_HTTP_HEADERS_SENT - an uncaught async throw that kills the process
             // on Node 16+. Swallowing the second reply keeps the API up.
-            let replied = false
-            const reply = (payload) => {
-                if (replied) return
-                replied = true
-                callback(payload)
-            }
+            const replyState = { replied: false }
             try {
                 var response = {}
                 // if (request.isSubcategory == '1') {
@@ -749,7 +762,7 @@ class UserProductsService {
                     response.error = true
                     response.statusCode = STRINGS.successStatusCode
                     response.message = STRINGS.commanErrorString
-                    reply(response)
+                    replyOnce(replyState, callback, response)
                 } else {
                     // console.log("ProductResponse****", productResponse)
                     if (productResponse.data.length > 0) {
@@ -814,7 +827,7 @@ class UserProductsService {
                                     response.error = true
                                     response.statusCode = STRINGS.successStatusCode
                                     response.message = STRINGS.commanErrorString
-                                    reply(response)
+                                    replyOnce(replyState, callback, response)
                                 } else if (checkProductNoyifyModel.data.length > 0) {
                                     productNotify = checkProductNoyifyModel.data[0].productUpdated == 1 ? 0 : 1
                                 }
@@ -902,7 +915,7 @@ class UserProductsService {
                                     response.message = STRINGS.SuccessString
                                     response.isPriceVisible = request.auth.isPriceVisible
                                     response.products = products
-                                    reply(response)
+                                    replyOnce(replyState, callback, response)
                                 }
                             }
 
@@ -913,7 +926,7 @@ class UserProductsService {
                             response.pages = 0
                             response.isPriceVisible = request.auth.isPriceVisible
                             response.products = []
-                            reply(response)
+                            replyOnce(replyState, callback, response)
                         }
 
                     } else {
@@ -923,7 +936,7 @@ class UserProductsService {
                         response.pages = 0
                         response.isPriceVisible = request.auth.isPriceVisible
                         response.products = productResponse.data
-                        reply(response)
+                        replyOnce(replyState, callback, response)
                     }
                 }
             } catch (e) {
@@ -931,7 +944,7 @@ class UserProductsService {
                 response.error = true
                 response.statusCode = STRINGS.errorStatusCode
                 response.message = STRINGS.oopsErrorMessage
-                reply(response)
+                replyOnce(replyState, callback, response)
             }
         }
 
@@ -1376,11 +1389,11 @@ class UserProductsService {
                 console.log("request auth", request.auth)
 
                 // console.log("cartItems after", cartItems.data)
-                let allProductsExcelFileLink;
+                let allProductsExcelFileLink = [];
                 let allProductsExcelFileLinkModel = await userProductsModel.allProductsExcelFileLinkModel()
                 console.log("allProductsExcelFileLinkModel", allProductsExcelFileLinkModel)
-                if (allProductsExcelFileLinkModel.error) {
-                    allProductsExcelFileLink.data = []
+                if (allProductsExcelFileLinkModel.error || !allProductsExcelFileLinkModel.data) {
+                    allProductsExcelFileLink = []
                 } else {
                     allProductsExcelFileLink = allProductsExcelFileLinkModel.data
                 }
@@ -1778,12 +1791,7 @@ class UserProductsService {
             // Reply at most once - see the note on productList. Without this, a throw
             // after an earlier reply makes the catch reply again and Express raises
             // ERR_HTTP_HEADERS_SENT, which takes the process down on Node 16+.
-            let replied = false
-            const reply = (payload) => {
-                if (replied) return
-                replied = true
-                callback(payload)
-            }
+            const replyState = { replied: false }
             try {
                 var response = {}
                 console.log("request", request.auth)
@@ -1811,7 +1819,7 @@ class UserProductsService {
                             response.error = true
                             response.statusCode = STRINGS.successStatusCode
                             response.message = STRINGS.commanErrorString
-                            return reply(response)
+                            return replyOnce(replyState, callback, response)
                         }
                     } else {
                         unique[val.productCode] = 0;
@@ -1823,7 +1831,7 @@ class UserProductsService {
                             response.error = true
                             response.statusCode = STRINGS.successStatusCode
                             response.message = STRINGS.commanErrorString
-                            return reply(response)
+                            return replyOnce(replyState, callback, response)
                         }
                     }
 
@@ -1845,7 +1853,7 @@ class UserProductsService {
                     //         response.error = true
                     //         response.statusCode = STRINGS.successStatusCode
                     //         response.message = STRINGS.commanErrorString
-                    //         return reply(response)
+                    //         return replyOnce(replyState, callback, response)
                     //     }
                     // } else 
                     if (val.quantity > val.productStockCount && val.quantity > 0) {
@@ -1855,7 +1863,7 @@ class UserProductsService {
                             response.error = true
                             response.statusCode = STRINGS.successStatusCode
                             response.message = STRINGS.commanErrorString
-                            return reply(response)
+                            return replyOnce(replyState, callback, response)
                         }
                         arr.push(val)
                     } else if (val.quantity == 0 || val.quantity < 0) {
@@ -1865,7 +1873,7 @@ class UserProductsService {
                             response.error = true
                             response.statusCode = STRINGS.successStatusCode
                             response.message = STRINGS.commanErrorString
-                            return reply(response)
+                            return replyOnce(replyState, callback, response)
                         }
                     }
                     else {
@@ -1889,7 +1897,7 @@ class UserProductsService {
                     //         response.error = true
                     //         response.statusCode = STRINGS.successStatusCode
                     //         response.message = STRINGS.commanErrorString
-                    //         return reply(response)
+                    //         return replyOnce(replyState, callback, response)
                     //     }
                     // } else 
 
@@ -1900,7 +1908,7 @@ class UserProductsService {
                             response.error = true
                             response.statusCode = STRINGS.successStatusCode
                             response.message = STRINGS.commanErrorString
-                            return reply(response)
+                            return replyOnce(replyState, callback, response)
                         }
                         arr.push(val)
                     }
@@ -1917,11 +1925,11 @@ class UserProductsService {
                 })
 
 
-                let allProductsExcelFileLink;
+                let allProductsExcelFileLink = [];
                 let allProductsExcelFileLinkModel = await userProductsModel.allProductsExcelFileLinkModel()
                 // console.log("allProductsExcelFileLinkModel", allProductsExcelFileLinkModel)
-                if (allProductsExcelFileLinkModel.error) {
-                    allProductsExcelFileLink.data = []
+                if (allProductsExcelFileLinkModel.error || !allProductsExcelFileLinkModel.data) {
+                    allProductsExcelFileLink = []
                 } else {
                     allProductsExcelFileLink = allProductsExcelFileLinkModel.data
                 }
@@ -2318,7 +2326,7 @@ class UserProductsService {
                                                 // response.statusCode = STRINGS.errorStatusCode
                                                 // response.message = "Sorry, Your credit Period is overdue, Can't place order"
                                                 // console.log("response", response)
-                                                // return reply(response)
+                                                // return replyOnce(replyState, callback, response)
 
                                                 response.isOverdue = 1
                                             }
@@ -2378,7 +2386,7 @@ class UserProductsService {
                     response.message = STRINGS.oopsErrorMessage
                 }
             }
-            reply(response)
+            replyOnce(replyState, callback, response)
         }
 
 
@@ -3571,7 +3579,7 @@ class UserProductsService {
                     response.statusCode = STRINGS.successStatusCode
                     response.message = STRINGS.commanErrorString
                 } else {
-                    if (checkCart.data.length > 0) {
+                    if (checkCart.data && checkCart.data.length > 0) {
                         var update = {}
                         update.userId = request.userId
                         update.barCode = request.barCode
@@ -3586,7 +3594,7 @@ class UserProductsService {
                             response.statusCode = STRINGS.successStatusCode
                             response.message = STRINGS.commanErrorString
                         } else {
-                            if (checkInstruction.data.length > 0) {
+                            if (checkInstruction.data && checkInstruction.data.length > 0) {
                                 var save = await userProductsModel.updateOtherInstruction(update)
                             } else {
                                 var save = await userProductsModel.addOtherInstruction(update)

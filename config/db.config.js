@@ -27,11 +27,19 @@ const db = require('knex')({
     // fast, logged failure instead of an invisible hang.
     pool: {
         min: 2,
-        max: 20,
+        max: 40,
         idleTimeoutMillis: 30000,
         reapIntervalMillis: 10000,
     },
-    acquireConnectionTimeout: 10000,
+    // 30s, not the 10s tried earlier and not knex's 60s default. At 10s the
+    // dashboard's queries gave up and returned error-shaped objects, which the
+    // callers read as `.data.length` and turned into "Something went wrong"; at
+    // 60s the app just span for a minute. This backend fires a lot of queries per
+    // page - salesRepHomeModel alone issues 28, and the product lists run two per
+    // product inside a forEach - so bursts are normal and need room to drain.
+    // The real fix is batching those per-product lookups; until then, 40
+    // connections and a 30s ceiling let a burst finish instead of failing.
+    acquireConnectionTimeout: 30000,
     debug: false
 })
 

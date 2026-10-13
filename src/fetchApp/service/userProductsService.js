@@ -598,7 +598,25 @@ class UserProductsService {
                         var products = product.data
                         var length = products.length
                         if (length > 0) {
-                            products.forEach(async function (item, index) {
+                            // Two queries for the page instead of two per product. This loop
+                            // used forEach with an async callback, so every product's pair of
+                            // queries fired at once - one 10-product page could occupy the
+                            // whole connection pool and starve every other request.
+                            const pageProductIds = products.map((p) => p.id)
+                            const pageProductCodes = products.map((p) => p.productCode)
+                            const [cartBulk, notifyBulk] = await Promise.all([
+                                userProductsModel.checkMyCartProductBulk(request.auth.id, pageProductIds),
+                                userProductsModel.checkProductNoyifyBulkModel(request.auth.customerID, pageProductCodes)
+                            ])
+                            const cartByProductId = new Map()
+                            ;(cartBulk.data || []).forEach((row) => {
+                                if (!cartByProductId.has(row.productId)) cartByProductId.set(row.productId, row)
+                            })
+                            // The query filters productUpdated = 0, so a row existing for a
+                            // code means notify = 1 - the same result the per-item check gave.
+                            const notifyCodes = new Set((notifyBulk.data || []).map((row) => row.productCode))
+
+                            products.forEach(function (item, index) {
                                 // User discount calculation
                                 // if (request.auth.isEnableDiscount === 1) {
                                 //   var discountObject = { userId: request.auth.id, productId: item.id }
@@ -608,14 +626,14 @@ class UserProductsService {
                                 //     products[index].price = item.MRP - (item.MRP * (discountValue.data.discount / 100))
                                 //   }
                                 // }
-                                var cart = await userProductsModel.checkMyCartProduct(request.auth.id, item.id)
+                                var cartRow = cartByProductId.get(item.id)
                                 var cartCount = 0
                                 var options = []
                                 var attribute = []
-                                if (cart.data.length > 0) {
-                                    var cartCount = cart.data[0].quantity
-                                    var attribute = JSON.parse(cart.data[0].attribute)
-                                    var options = JSON.parse(cart.data[0].options)
+                                if (cartRow) {
+                                    var cartCount = cartRow.quantity
+                                    var attribute = JSON.parse(cartRow.attribute)
+                                    var options = JSON.parse(cartRow.options)
                                 }
 
                                 // Stock Status
@@ -640,14 +658,8 @@ class UserProductsService {
 
                                 var productNotify = 0;
 
-                                var checkProductNoyifyModel = await userProductsModel.checkProductNoyifyModel(request.auth.customerID, item.productCode)
-                                if (checkProductNoyifyModel.error) {
-                                    response.error = true
-                                    response.statusCode = STRINGS.successStatusCode
-                                    response.message = STRINGS.commanErrorString
-                                    callback(response)
-                                } else if (checkProductNoyifyModel.data.length > 0) {
-                                    productNotify = checkProductNoyifyModel.data[0].productUpdated == 1 ? 0 : 1
+                                if (notifyCodes.has(item.productCode)) {
+                                    productNotify = 1
                                 }
                                 products[index].productNotify = productNotify
 
@@ -814,23 +826,37 @@ class UserProductsService {
                             // console.log("products", products)
                             var length = products.length
 
+                            // Cart rows and notify flags for the whole page in two queries
+                            // instead of two per product. The loop below used to await both
+                            // per item, so a 10-product page cost 20 sequential round trips
+                            // and held pool connections the whole time.
+                            const pageProductIds = products.map((p) => p.id)
+                            const pageProductCodes = products.map((p) => p.productCode)
+                            const [cartBulk, notifyBulk] = await Promise.all([
+                                userProductsModel.checkMyCartProductBulk(request.auth.id, pageProductIds),
+                                userProductsModel.checkProductNoyifyBulkModel(request.auth.customerID, pageProductCodes)
+                            ])
+                            const cartByProductId = new Map()
+                            ;(cartBulk.data || []).forEach((row) => {
+                                if (!cartByProductId.has(row.productId)) cartByProductId.set(row.productId, row)
+                            })
+                            // The query already filters productUpdated = 0, so a row existing
+                            // for a code means notify = 1 - same result the per-item check gave.
+                            const notifyCodes = new Set((notifyBulk.data || []).map((row) => row.productCode))
+                            if (notifyBulk.error) {
+                                response.error = true
+                                response.statusCode = STRINGS.successStatusCode
+                                response.message = STRINGS.commanErrorString
+                                replyOnce(replyState, callback, response)
+                            }
+
                             // products = sortingProduct
                             for (let i = 0; i < products.length; i++) {
                                 var index = i
                                 var item = products[i]
 
-                                var cart = await userProductsModel.checkMyCartProduct(request.auth.id, item.id)
-                                var productNotify = 0;
-
-                                var checkProductNoyifyModel = await userProductsModel.checkProductNoyifyModel(request.auth.customerID, item.productCode)
-                                if (checkProductNoyifyModel.error) {
-                                    response.error = true
-                                    response.statusCode = STRINGS.successStatusCode
-                                    response.message = STRINGS.commanErrorString
-                                    replyOnce(replyState, callback, response)
-                                } else if (checkProductNoyifyModel.data.length > 0) {
-                                    productNotify = checkProductNoyifyModel.data[0].productUpdated == 1 ? 0 : 1
-                                }
+                                var cartRow = cartByProductId.get(item.id)
+                                var productNotify = notifyCodes.has(item.productCode) ? 1 : 0
                                 products[index].productNotify = productNotify
 
 
@@ -840,10 +866,10 @@ class UserProductsService {
                                 var attribute = []
                                 var options = []
                                 // console.log("cart",cart.data)
-                                if (cart.data.length > 0) {
-                                    var cartCount = cart.data[0].quantity
-                                    var attribute = JSON.parse(cart.data[0].attribute) == null ? [] : JSON.parse(cart.data[0].attribute)
-                                    var options = JSON.parse(cart.data[0].options) == null ? [] : JSON.parse(cart.data[0].options)
+                                if (cartRow) {
+                                    var cartCount = cartRow.quantity
+                                    var attribute = JSON.parse(cartRow.attribute) == null ? [] : JSON.parse(cartRow.attribute)
+                                    var options = JSON.parse(cartRow.options) == null ? [] : JSON.parse(cartRow.options)
                                 }
                                 // User discount calculation
                                 // if (request.auth.isEnableDiscount === 1) {

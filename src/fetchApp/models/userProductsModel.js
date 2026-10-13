@@ -1042,6 +1042,72 @@ class UserProductsModel {
         // })
       })
     }
+    // Bulk form of checkMyCartProduct. The services used to call that once per
+    // product in a page loop - 10 products meant 10 round trips, run either
+    // sequentially (slow) or all at once (filling the connection pool). One
+    // whereIn does the same work in a single query.
+    // Returns the same row shape; index by productId at the call site.
+    this.checkMyCartProductBulk = function (userId, productIds) {
+      var response = {}
+      return new Promise(function (resolve) {
+        if (!productIds || productIds.length === 0) {
+          response.error = false
+          response.data = []
+          return resolve(response)
+        }
+        knex.db('cartItems')
+          .select('cartItems.*', 'productCatalog.MRP')
+          .innerJoin('products', 'products.id', '=', 'cartItems.productId')
+          .innerJoin('productCatalog', 'cartItems.productId', '=', 'productCatalog.productId')
+          .where({
+            'userId': userId,
+            'cartType': 'USER'
+          })
+          .whereIn('cartItems.productId', productIds)
+          .groupBy('products.id')
+          .then((result) => {
+            response.error = false
+            response.data = result
+          })
+          .catch((error) => {
+            console.log("checkMyCartProductBulk", error)
+            response.error = true
+          })
+          .finally(() => {
+            resolve(response)
+          })
+      })
+    }
+
+    // Bulk form of checkProductNoyifyModel - see the note above.
+    this.checkProductNoyifyBulkModel = function (customerID, productCodes) {
+      var response = {}
+      return new Promise(function (resolve) {
+        if (!productCodes || productCodes.length === 0) {
+          response.error = false
+          response.data = []
+          return resolve(response)
+        }
+        knex.db('notifyProducts')
+          .select('*')
+          .whereIn('notifyProducts.productCode', productCodes)
+          .andWhere('notifyProducts.customerID', customerID)
+          .andWhere('notifyProducts.productUpdated', 0)
+          .andWhere('notifyProducts.isCancelled', 0)
+          .then((result) => {
+            response.error = false
+            response.data = result
+          })
+          .catch((error) => {
+            console.log("checkProductNoyifyBulkModel", error)
+            response.error = true
+          })
+          .finally(() => {
+            resolve(response)
+          })
+      })
+    }
+
     this.checkMyCartProduct = function (userId, productId) {
       var response = {}
       return new Promise(function (resolve) {

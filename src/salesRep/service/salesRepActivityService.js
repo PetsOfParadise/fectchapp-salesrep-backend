@@ -1283,65 +1283,61 @@ class SalesRepActivityService {
                         // var end = page * 10
                         // usersList = usersList.slice(start, end)
 
-                        var length = usersList.length
                         var shopArray = []
-                        if (length > 0) {
-                            usersList.forEach(async function (item) {
+                        if (usersList.length > 0) {
+                            // Sequential loop, not forEach(async ...). The old version replied
+                            // only from inside `if (--length === 0)`, so any iteration that threw
+                            // skipped its own decrement, the counter never reached zero and the
+                            // request was never answered at all - the Payment Reminder screen
+                            // span for ever rather than erroring. And it did throw: a shop with
+                            // no reminder row made remainder.data[0] undefined.
+                            for (const item of usersList) {
                                 var shopObject = {}
                                 var remainder = await salesRepActivityModel.checkRemailderOrders(item.cartUserId, request.auth.id)
-                                console.log("remainder", remainder.data[0])
+                                var row = (remainder && remainder.data && remainder.data.length > 0) ? remainder.data[0] : null
+
                                 shopObject.id = item.cartUserId
                                 shopObject.shopName = item.shopName
                                 shopObject.shopAddress = item.shopAddress
                                 shopObject.shopTotal = item.total
-                                // if (remainder.data.length > 0) {
-                                //     var diffDays = await utils.dateDifferenceInDay(new Date(), remainder.data[0].dueDate)
-                                //     shopObject.duration = diffDays
-                                //     shopObject.orderDate = remainder.data[0].shippedDate
 
-                                //     shopObject.dueDate = remainder.data[0].dueDate
-                                //     shopObject.orderAmount = remainder.data[0].amount
-                                // }
-
-                                var today = new Date();
-                                var dd = String(today.getDate()).padStart(2, '0');
-                                var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-                                var yyyy = today.getFullYear();
-                                today = dd + '/' + mm + '/' + yyyy;
-                                // var date1Arr = remainder.data[0].dueDate.toString().split("/");
-                                var date1Arr = remainder.data[0].dueDate == null ? remainder.data[0].alterDueDate.toString().split("/") : remainder.data[0].dueDate.toString().split("/")
-                                var date2Arr = today.toString().split("/")
-                                var date1 = new Date(+date1Arr[2], date1Arr[1] - 1, +date1Arr[0]);
-                                var date2 = new Date(+date2Arr[2], date2Arr[1] - 1, +date2Arr[0]);
-                                var Difference_In_Time = date1.getTime() - date2.getTime();
-                                var daysLeft = Difference_In_Time / (1000 * 3600 * 24);
-
-                                console.log("daysLeft", daysLeft)
-                                // if (daysLeft < 0) {
-                                // }
-                                shopObject.duration = daysLeft
-                                shopObject.orderDate = remainder.data[0].shippedDate
-
-                                shopObject.dueDate = remainder.data[0].dueDate
-                                shopObject.orderAmount = remainder.data[0].amount
-
-
-
-                                shopArray.push(shopObject)
-                                if (--length === 0) {
-                                    shopArray.sort(function (a, b) {
-                                        return a.duration - b.duration
-                                    })
-                                    console.log("shopArray", shopArray)
-                                    response.error = false
-                                    response.statusCode = STRINGS.successStatusCode
-                                    response.message = STRINGS.SuccessString
-                                    response.outstandingAmount = outStandingAmount.data[0].total
-                                    response.pages = pageCount
-                                    response.shopList = shopArray
-                                    callback(response)
+                                // Shops with no reminder row simply have no due date, rather
+                                // than taking the whole response down with them.
+                                var daysLeft = null
+                                var dueDateValue = row ? (row.dueDate == null ? row.alterDueDate : row.dueDate) : null
+                                if (dueDateValue != null) {
+                                    var today = new Date();
+                                    var dd = String(today.getDate()).padStart(2, '0');
+                                    var mm = String(today.getMonth() + 1).padStart(2, '0');
+                                    var yyyy = today.getFullYear();
+                                    today = dd + '/' + mm + '/' + yyyy;
+                                    var date1Arr = dueDateValue.toString().split("/")
+                                    var date2Arr = today.toString().split("/")
+                                    var date1 = new Date(+date1Arr[2], date1Arr[1] - 1, +date1Arr[0]);
+                                    var date2 = new Date(+date2Arr[2], date2Arr[1] - 1, +date2Arr[0]);
+                                    daysLeft = (date1.getTime() - date2.getTime()) / (1000 * 3600 * 24);
                                 }
+
+                                shopObject.duration = daysLeft
+                                shopObject.orderDate = row ? row.shippedDate : null
+                                shopObject.dueDate = row ? row.dueDate : null
+                                shopObject.orderAmount = row ? row.amount : 0
+                                shopArray.push(shopObject)
+                            }
+
+                            // undated shops sort last instead of poisoning the comparator
+                            shopArray.sort(function (a, b) {
+                                var x = a.duration === null ? Number.MAX_SAFE_INTEGER : a.duration
+                                var y = b.duration === null ? Number.MAX_SAFE_INTEGER : b.duration
+                                return x - y
                             })
+                            response.error = false
+                            response.statusCode = STRINGS.successStatusCode
+                            response.message = STRINGS.SuccessString
+                            response.outstandingAmount = outStandingAmount.data[0].total
+                            response.pages = pageCount
+                            response.shopList = shopArray
+                            callback(response)
                         } else {
                             response.error = false
                             response.statusCode = STRINGS.successStatusCode

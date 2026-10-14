@@ -339,9 +339,15 @@ this.salesRepPrimaryShopCurrentMonthPaymentCollected = function (req) {
         .limit(data.limit)
         .modify(function (queryBuilder) {
           if (data.type === 'MONTH') {
-            // queryBuilder.whereRaw('Month(orderItems.createdAt) = ?', [knex.db.raw('MONTH(now())')])
-            queryBuilder.whereRaw('Month(orderItems.createdAt) = ?', [month])
-            queryBuilder.whereRaw('YEAR(orderItems.createdAt) = ?', [year])
+            // A half-open range, not Month()/YEAR() on the column. Wrapping createdAt
+            // in a function made the filter unusable by any index, so MySQL scanned
+            // every order, pulled all ~23 order items for each, and only then threw
+            // away everything outside the month - 770k rows examined for a handful of
+            // results, and 931ms of a 938ms dashboard request. As a range it can be
+            // driven by an index on createdAt instead.
+            const monthStart = `${year}-${String(month).padStart(2, '0')}-01 00:00:00`
+            queryBuilder.where('orderItems.createdAt', '>=', monthStart)
+            queryBuilder.whereRaw('orderItems.createdAt < DATE_ADD(?, INTERVAL 1 MONTH)', [monthStart])
 
           } else {
             queryBuilder.whereRaw('week(orderItems.createdAt) = ?', [knex.db.raw('week(now())')])
